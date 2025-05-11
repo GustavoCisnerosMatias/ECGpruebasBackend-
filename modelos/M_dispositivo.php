@@ -15,10 +15,11 @@ class M_dispositivo extends \DB\SQL\Mapper
 
     public function getTopics()
     {
-        $sql = "SELECT p.nombre, p.fecha_registro,p.estado FROM tab_dispositivos p";
+        // $sql = "SELECT p.nombre, p.fecha_registro,p.estado FROM tab_dispositivos p";
+        $sql = "SELECT p.id_dispo, p.nombre, p.fecha_registro,p.estado FROM tab_dispositivos p;";
         return $this->db->exec($sql);
     }
-
+    
     // Método para crear un nuevo dispositivo
     public function createDispositivo($data)
     {

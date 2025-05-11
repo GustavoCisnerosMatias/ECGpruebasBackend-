@@ -8,7 +8,8 @@
 		"cboden/ratchet": "^0.4.4",
 		"react/socket": "^1.16",
 		"react/event-loop": "^1.5",
-		"vonage/client": "^4.1"
+		"vonage/client": "^4.1",
+		"firebase/php-jwt": "^6.11"
 	},
 	"repositories": [
 		{

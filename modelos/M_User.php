@@ -74,7 +74,9 @@ class M_User extends \DB\SQL\Mapper
        public function getdispo($userId)
        {
            $db = \Base::instance()->get('DB');
-           $query = "SELECT t.nombre FROM tab_dispositivos t WHERE t.id_usuario =  ?";
+        //    $query = "SELECT t.nombre FROM tab_dispositivos t WHERE t.id_usuario =  ?";
+        $query = "SELECT t.id_dispo,  t.nombre FROM tab_dispositivos t WHERE t.id_usuario =  ?";
+
            return $db->exec($query, $userId);
        }
 
@@ -94,12 +96,7 @@ class M_User extends \DB\SQL\Mapper
         return $this->count(['cedula = ?', $cedula]) > 0;
     }
 
-    // Verificar si el nombre de usuario ya está registrado
-    public function checkUsernameExists($username)
-    {
-        return $this->count(['username = ?', $username]) > 0;
-    }
-    
+
     // Verificar si el correo electrónico ya está registrado
     public function checkCorreoExists($correo)
     {
@@ -159,8 +156,6 @@ class M_User extends \DB\SQL\Mapper
             'correo_electronico' => $this->correo_electronico,
             'id_rol' => $this->id_rol,
             'estado' => $this->estado,
-            'username' => $this->username,
-            
         ];
     }
     
@@ -202,26 +197,6 @@ class M_User extends \DB\SQL\Mapper
 
 
 
-    // Método para cambiar el nombre de usuario
-    public function cambiarUsername($id_usuario, $nuevo_username)
-    {
-        // Cargar el usuario existente por su id_usuario
-        $this->load(['id_usuario = ?', $id_usuario]);
-        
-        if ($this->dry()) {
-            return false; // No se encontró ningún registro con ese id_usuario
-        }
-        
-        // Actualizar el nombre de usuario
-        $this->username = $nuevo_username;
-
-        try {
-            return $this->save(); // Guardar los cambios
-        } catch (\Exception $e) {
-            error_log('Error al actualizar el nombre de usuario: ' . $e->getMessage());
-            return false; // Error al actualizar
-        }
-    }
 
 
     public function editarestado($data) {
@@ -230,7 +205,7 @@ class M_User extends \DB\SQL\Mapper
         
         // Campos permitidos para actualizar>
         $allowedFields = [
-            'cedula','nombre','apellido','telefono','correo_electronico','id_rol','username','estado'
+            'cedula','nombre','apellido','telefono','correo_electronico','id_rol','estado'
         ];
 
         // Actualizar los campos permitidos si están presentes en $data
@@ -319,25 +294,27 @@ private function marcarTokenComoUtilizado($usuarioId, $token)
 
 
 
- // Método para actualizar la contraseña
- public function actualizarContrasena($usuarioId, $nuevaContrasena)
+// Método para actualizar la contraseña
+public function actualizarContrasena($usuarioId, $nuevaContrasena)
  {
      $this->load(['id_usuario = ?', $usuarioId]);
      if (!$this->dry()) {
          $this->contrasena = password_hash($nuevaContrasena, PASSWORD_BCRYPT); // Hashea la nueva contraseña
+         $this->estado = 'A';
          return $this->update(); // Actualiza el registro en la base de datos
      }
      return false; // Usuario no encontrado
  }
-// Método para actualizar el nombre de usuario
-public function actualizarUsername($usuarioId, $nuevoUsername)
-{
-    $this->load(['id_usuario = ?', $usuarioId]);
+
+// bloquear usuario
+public function bloquearus($username, $bloqueado)
+{     
+     $this->load(['cedula = ?', $username]);
     if (!$this->dry()) {
-        $this->username = $nuevoUsername; // Establece el nuevo nombre de usuario
+        $this->estado = $bloqueado; // Establece el nuevo estado
         return $this->update(); // Actualiza el registro en la base de datos
     }
-    return false; // Usuario no encontrado
+    return false; // Usuario no encontrado   
 }
 
  

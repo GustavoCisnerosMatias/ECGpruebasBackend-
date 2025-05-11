@@ -8,6 +8,17 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
+function loadEnv($path) {
+    if (!file_exists($path)) return;
+
+    $lines = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($lines as $line) {
+        if (strpos(trim($line), '#') === 0) continue; // saltar comentarios
+        list($key, $value) = explode('=', $line, 2);
+        $_ENV[trim($key)] = trim($value);
+    }
+}
+
 class User_Ctrl
 {
     protected $M_Modelo;
@@ -150,7 +161,7 @@ class User_Ctrl
          $data = json_decode($json, true);
  
          // Verifica si todos los campos necesarios están presentes en $data
-         $requiredFields = ['id_usuario','cedula','nombre','apellido','telefono','correo_electronico','id_rol','username','estado'];
+         $requiredFields = ['id_usuario','cedula','nombre','apellido','telefono','correo_electronico','id_rol','estado'];
          foreach ($requiredFields as $field) {
              if (!isset($data[$field])) {
                  echo json_encode(['mensaje' => 'Faltan parámetros: ' . $field]);
@@ -210,67 +221,28 @@ class User_Ctrl
     
 
 
-
-// Método para cambiar el nombre de usuario (username)
-     public function cambiarUsername($f3)
-    {
-         $json = $f3->get('BODY');
-         $data = json_decode($json, true);
- 
-         // Verificar si todos los campos necesarios están presentes en $data
-         $requiredFields = ['id_usuario', 'cedula', 'nuevo_username'];
-         foreach ($requiredFields as $field) {
-             if (!isset($data[$field])) {
-                 echo json_encode(['mensaje' => 'Faltan parámetros: ' . $field]);
-                 return;
-             }
-         }
- 
-         // Verificar si la cédula es correcta para el id_usuario proporcionado
-         $usuario = $this->M_Modelo->load(['id_usuario = ?', $data['id_usuario']]);
-         if ($usuario->cedula !== $data['cedula']) {
-             echo json_encode(['mensaje' => 'La cédula proporcionada no coincide con el id_usuario']);
-             return;
-         }
- 
-         // Verificar si el nuevo nombre de usuario ya está registrado
-         if ($this->M_Modelo->checkUsernameExists($data['nuevo_username'])) {
-             echo json_encode(['mensaje' => 'El nombre de usuario ya está registrado. Elija otro usuario']);
-             return;
-         }
- 
-         // Actualizar el nombre de usuario
-         $result = $this->M_Modelo->cambiarUsername($data['id_usuario'], $data['nuevo_username']);
- 
-         if ($result) {
-             echo json_encode(['mensaje' => 'Usuario actualizado exitosamente']);
-         } else {
-             echo json_encode(['mensaje' => 'Error al actualizar el nombre de usuario']);
-         }
-    }
-
 // Método para manejar la autenticación de usuario
 public function authenticate($f3)
 {
    // error_log("POST Data: " . print_r($f3->get('POST'), true));
 
-    $username = $f3->get('POST.username');
+    $cedula = $f3->get('POST.cedula');
     $password = $f3->get('POST.contrasena');
 
     // Verificar si los parámetros están definidos
-    if (empty($username) || empty($password)) {
+    if (empty($cedula) || empty($password)) {
         echo json_encode([
-            'mensaje' => 'Faltan parámetros: username y/o contrasena'
+            'mensaje' => 'Faltan parámetros: cedula y/o contrasena'
         ]);
         return;
     }
 
     // Limpiar las entradas
-    $username = trim($username);
+    $cedula = trim($cedula);
     $password = trim($password);
 
     // Cargar el usuario de la base de datos por nombre de usuario
-    $this->M_Modelo->load(['username = ?', $username]);
+    $this->M_Modelo->load(['cedula = ?', $cedula]);
 
     // Verificar si se encontró el usuario
     if ($this->M_Modelo->id_usuario) {
@@ -330,7 +302,6 @@ public function createUser($f3)
         'fecha_nacimiento' => 'Fecha de Nacimiento',
         'correo_electronico' => 'Correo Electrónico', 
         'telefono' => 'Teléfono', 
-        'username' => 'Nombre de Usuario', 
         'contrasena' => 'Contraseña', 
         'id_rol' => 'Rol', 
         'estado' => 'Estado',
@@ -353,11 +324,7 @@ public function createUser($f3)
         return;
     }  */
 
-    // Verificar si el username ya está registrado (descomentar cuando esté implementado)
-    /* if ($this->M_Modelo->checkUsernameExists($data['username'])) {
-        echo json_encode(['mensaje' => 'El nombre de usuario "' . $data['username'] . '" ya está en uso, elija otro.']);
-        return;
-    } */
+
 
     // Encriptar la contraseña antes de guardarla
     $data['contrasena'] = password_hash($data['contrasena'], PASSWORD_DEFAULT);
@@ -437,8 +404,7 @@ public function createUsermedico($f3)
         'telefono' => 'Teléfono', 
         'id_pais' => 'País', 
         'id_provincia' => 'Provincia',
-        'id_canton' => 'Cantón', 
-        'username' => 'Nombre de Usuario', 
+        'id_canton' => 'Cantón',  
         'contrasena' => 'Contraseña', 
         'id_rol' => 'Rol', 
         'estado' => 'Estado',
@@ -466,11 +432,7 @@ public function createUsermedico($f3)
         return;
     } 
 
-    // Verificar si el username ya está registrado (descomentar cuando esté implementado)
-    /* if ($this->M_Modelo->checkUsernameExists($data['username'])) {
-        echo json_encode(['mensaje' => 'El nombre de usuario "' . $data['username'] . '" ya está en uso, elija otro.']);
-        return;
-    } */
+
 
     // Encriptar la contraseña antes de guardarla
     $data['contrasena'] = password_hash($data['contrasena'], PASSWORD_DEFAULT);
@@ -587,17 +549,16 @@ public function verificarTokenYActualizarContrasena($f3)
 }
 
 
-//username recuperar 
-// Método para verificar el token y actualizar el nombre de usuario
+
 public function verificarTokenYActualizarUsername($f3)
 {
     $data = json_decode($f3->get('BODY'), true);
     $correo = isset($data['correo']) ? $data['correo'] : null;
     $token = isset($data['token']) ? $data['token'] : null;
-    $nuevoUsername = isset($data['nuevo_username']) ? $data['nuevo_username'] : null;
+
 
     // Validar que el correo, el token y el nuevo nombre de usuario no sean nulos
-    if (empty($correo) || empty($token) || empty($nuevoUsername)) {
+    if (empty($correo) || empty($token) ) {
         echo json_encode(['mensaje' => 'Todos los campos son obligatorios.']);
         return;
     }
@@ -615,15 +576,105 @@ public function verificarTokenYActualizarUsername($f3)
         return;
     }
 
-    // Actualizar el nombre de usuario
-    if ($this->M_Modelo->actualizarUsername($usuarioId, $nuevoUsername)) {
-        echo json_encode(['mensaje' => 'Nombre de usuario actualizado con éxito.']);
-    } else {
-        echo json_encode(['mensaje' => 'Error al actualizar el nombre de usuario.']);
+}
+public function bloquearusuariod($f3){
+    $data = json_decode($f3->get('BODY'), true);
+    $username = isset($data['username']) ? $data['username'] : null;
+    $bloqueado = isset($data['bloqueado']) ? $data['bloqueado'] : null;
+
+    if (empty($username) || empty($bloqueado)) {
+        echo json_encode(['mensaje' => 'Todos los campos son obligatorios.']);
+        return;
     }
+
+    // bloquear
+   
+    if ($this->M_Modelo->bloquearus($username, $bloqueado)) {
+        echo json_encode(['mensaje' => 'usuario bloqueado.']);
+    } else {
+        echo json_encode(['mensaje' => 'Error de bloqueo.']);
+    }
+
 }
 
+public function desbloquearuser($f3) {
+    header('Content-Type: application/json');
 
+    try {
+        // Cargar variables de entorno
+        loadEnv(__DIR__ . '/../.env'); // Ajusta la ruta según tu estructura
+
+        $data = json_decode($f3->get('BODY'), true);
+        $cedula = isset($data['cedula']) ? trim($data['cedula']) : null;
+        $correo = isset($data['correo']) ? trim($data['correo']) : null;
+
+        if (empty($cedula) || empty($correo)) {
+            echo json_encode(['mensaje' => 'Todos los campos son obligatorios.']);
+            return;
+        }
+
+        // Cargar usuario por cédula
+        $this->M_Modelo->load(['cedula = ?', $cedula]);
+
+        if ($this->M_Modelo->dry()) {
+            echo json_encode(['mensaje' => 'Usuario no encontrado.']);
+            return;
+        }
+
+        // Verificar si el correo coincide
+        if ($this->M_Modelo->correo_electronico !== $correo) {
+            echo json_encode(['mensaje' => 'El correo no coincide con la cédula ingresada.']);
+            return;
+        }
+
+        // Verificar si el usuario NO está bloqueado
+        if ($this->M_Modelo->estado !== 'B') {
+            echo json_encode(['mensaje' => 'El usuario no está bloqueado.']);
+            return;
+        }
+        // Obtener el ID del usuario
+        $id_usuario = $this->M_Modelo->id_usuario;
+
+        // Generar token de recuperación
+        $token = random_int(100000, 999999);
+        $tokenExpiracion = date('Y-m-d H:i:s', strtotime('+5 minutes'));
+
+        // Guardar token en la base de datos
+
+        $this->M_Modelo->guardarToken($id_usuario, $token, $tokenExpiracion);
+
+
+        // Enviar el correo con PHPMailer
+        $mail = new PHPMailer(true);
+        try {
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = $_ENV['SMTP_USER'];
+            $mail->Password = $_ENV['SMTP_PASS'];
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = 587;
+
+            $mail->setFrom('noreply@example.com', 'Soporte');
+            $mail->addAddress($correo);
+            $mail->isHTML(true);
+            $mail->CharSet = 'UTF-8';
+            $mail->Subject = 'Recuperación de credenciales ViTECED';
+            $mail->Body = "Aquí tienes tu código de recuperación: <strong>$token</strong>";
+            $mail->AltBody = "Aquí tienes tu código de recuperación: $token";
+
+            $mail->send();
+            echo json_encode(['mensaje' => 'Código de recuperación enviado']);
+        } catch (Exception $e) {
+            echo json_encode(['mensaje' => "Error al enviar el correo: {$mail->ErrorInfo}"]);
+        }
+
+    } catch (Exception $e) {
+        error_log("Error en desbloquearuser: " . $e->getMessage());
+        http_response_code(500);
+        echo json_encode(['error' => $e->getMessage()]);
+    }
+}
     
 
 

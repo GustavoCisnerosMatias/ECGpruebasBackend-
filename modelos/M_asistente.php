@@ -29,7 +29,7 @@ class M_asistente extends \DB\SQL\Mapper {
     // Método para obtener los datos de un médico según el id_usuario
     public function obtenerasistentePorUsuario($id_usuario) {
         $sql = "
-            SELECT u.nombre, u.apellido,a.id_asistente,a.estado, TO_BASE64(p.foto)
+            SELECT DISTINCT u.nombre, u.apellido,a.id_asistente,a.estado, TO_BASE64(p.foto)
             FROM medicos e 
             JOIN asistente a ON a.id_medico = e.id_medico 
             JOIN Usuarios u ON a.id_usuario = u.id_usuario 
