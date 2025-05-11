@@ -104,7 +104,6 @@ class datatimereal_Ctrl {
   
 }
 
-?>
 
 
 
