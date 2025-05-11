@@ -23,4 +23,3 @@ class M_antecedente_personal extends \DB\SQL\Mapper {
     }
 
 }
-?>

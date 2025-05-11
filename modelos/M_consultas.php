@@ -81,4 +81,3 @@ public function getAntecedentesPersonales($id_paciente) {
 
     
 }
-?>

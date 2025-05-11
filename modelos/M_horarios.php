@@ -146,4 +146,3 @@ class M_horarios extends \DB\SQL\Mapper
 
 }
 
-?>

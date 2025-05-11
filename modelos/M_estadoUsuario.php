@@ -32,4 +32,3 @@ class M_estadoUsuario extends \DB\SQL\Mapper
 
 }
 
-?>

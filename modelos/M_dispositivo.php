@@ -61,5 +61,4 @@ class M_dispositivo extends \DB\SQL\Mapper
 
 }
 
-?>
 

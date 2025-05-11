@@ -32,4 +32,3 @@ class M_medicamentos extends \DB\SQL\Mapper {
 
      
 }
-?>

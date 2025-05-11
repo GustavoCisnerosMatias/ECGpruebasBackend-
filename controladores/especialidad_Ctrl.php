@@ -27,4 +27,4 @@ class especialidad_Ctrl
 
    
 }
-?>
+

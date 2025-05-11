@@ -76,4 +76,4 @@ class M_asistente extends \DB\SQL\Mapper {
     
 }
 
-?>
+

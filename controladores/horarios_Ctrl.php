@@ -152,4 +152,4 @@ public function buscarhorarioxid_medico($f3)
 
 }
 
-?>
+

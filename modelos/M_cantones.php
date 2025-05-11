@@ -11,4 +11,3 @@ class M_cantones extends \DB\SQL\Mapper {
         
     }
 }
-?>

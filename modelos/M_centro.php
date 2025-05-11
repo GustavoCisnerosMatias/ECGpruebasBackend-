@@ -17,4 +17,3 @@ class M_centro extends \DB\SQL\Mapper {
          return $this->save();
      } */
 }
-?>

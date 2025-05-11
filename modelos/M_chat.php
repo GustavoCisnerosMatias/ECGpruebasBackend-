@@ -79,4 +79,4 @@ class M_chat extends \DB\SQL\Mapper {
     }
     
 }
-?>
+

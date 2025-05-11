@@ -99,4 +99,4 @@ class M_alertas extends \DB\SQL\Mapper {
     }
 
 }
-?>
+

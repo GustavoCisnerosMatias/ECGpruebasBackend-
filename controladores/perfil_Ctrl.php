@@ -72,5 +72,5 @@ public function agregarImagen($f3)
 
 
 }
-?>
+
 

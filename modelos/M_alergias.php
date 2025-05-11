@@ -121,4 +121,4 @@ public function eliminarAlergia($id_alergia) {
 
 
 }
-?>
+

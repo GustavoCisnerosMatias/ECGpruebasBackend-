@@ -29,4 +29,3 @@ class M_perfil extends \DB\SQL\Mapper {
     }
 
 }
-?>

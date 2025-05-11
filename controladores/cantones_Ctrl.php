@@ -38,5 +38,5 @@ class cantones_Ctrl
         }
     }
 }
-?>
+
 

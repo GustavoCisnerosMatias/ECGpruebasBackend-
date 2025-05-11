@@ -17,4 +17,3 @@ class M_paises extends \DB\SQL\Mapper {
          return $this->save();
      } */
 }
-?>

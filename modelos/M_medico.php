@@ -42,4 +42,4 @@ class M_medico extends \DB\SQL\Mapper {
         return $this->db->exec($sql, [$id_usuario]);
     }
 }
-?>
+

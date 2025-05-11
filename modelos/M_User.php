@@ -319,6 +319,6 @@ public function bloquearus($username, $bloqueado)
 
  
 }
-?>
+
 
 

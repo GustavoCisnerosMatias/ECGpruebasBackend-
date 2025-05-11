@@ -176,4 +176,3 @@ class chat_Ctrl
 
 
 }
-?>

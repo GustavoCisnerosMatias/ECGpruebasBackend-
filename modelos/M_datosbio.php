@@ -24,4 +24,4 @@ class M_datosbio extends \DB\SQL\Mapper
         return $this->db->exec($sql, [$id_usuario, $id_parametro, $fecha_ini, $fecha_fin]);
     }
 }
-?>
+

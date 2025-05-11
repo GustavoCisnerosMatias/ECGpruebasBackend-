@@ -32,4 +32,3 @@ class M_parametros extends \DB\SQL\Mapper {
 }
 
 }
-?>

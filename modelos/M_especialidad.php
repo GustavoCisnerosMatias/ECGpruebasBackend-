@@ -17,4 +17,3 @@ class M_especialidad extends \DB\SQL\Mapper {
          return $this->save();
      } */
 }
-?>

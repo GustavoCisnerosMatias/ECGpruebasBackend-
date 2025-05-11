@@ -12,4 +12,3 @@ class M_Provincias extends \DB\SQL\Mapper {
     }
  
 }
-?>

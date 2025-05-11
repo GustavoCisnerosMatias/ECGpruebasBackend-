@@ -177,4 +177,3 @@ public function obtenerDatosMedicoPaciente($f3) {
         }
     } */
 }
-?>

@@ -125,4 +125,4 @@ public function mostrartipoalergias($f3)
     
    
 }
-?>
+

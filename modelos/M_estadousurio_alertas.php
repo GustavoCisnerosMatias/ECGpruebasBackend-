@@ -31,4 +31,3 @@ class M_estadousurio_alertas extends \DB\SQL\Mapper
 
 }
 
-?>
