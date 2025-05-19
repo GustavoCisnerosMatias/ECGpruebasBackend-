@@ -678,7 +678,74 @@ public function desbloquearuser($f3) {
     
 
 
+// public function obtenerTopicforUser($f3)
+// {
+//     // Obtener el id_usuario desde la petición POST
+//     $idUsuario = $f3->get('POST.id_usuario');
 
+//     // Validar que el parámetro esté presente
+//     if (empty($idUsuario)) {
+//         echo json_encode([
+//             'mensaje' => 'Falta el parámetro id_usuario'
+//         ]);
+//         return;
+//     }
+
+//     // Limpiar el valor
+//     $idUsuario = trim($idUsuario);
+
+//     // Cargar los datos del usuario
+//     $this->M_Modelo->load(['id_usuario = ?', $idUsuario]);
+
+//     // Verificar si el usuario existe
+//     if ($this->M_Modelo->id_usuario) {
+//         // Obtener el topic/dispositivo
+//         $dispo = $this->M_Modelo->getdispo($idUsuario);
+
+//         echo json_encode([
+//             'mensaje' => 'Topic obtenido correctamente',
+//             'topic' => $dispo
+//         ]);
+//     } else {
+//         echo json_encode([
+//             'mensaje' => 'Usuario no encontrado'
+//         ]);
+//     }
+// }
+public function obtenerTopicforUser($f3)
+{
+    // Obtener el cuerpo de la solicitud y decodificar el JSON
+    $json = $f3->get('BODY');
+    $data = json_decode($json, true);
+
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        echo json_encode(['mensaje' => 'JSON inválido']);
+        return;
+    }
+
+    // Verificar que el parámetro exista
+    if (!isset($data['id_usuario'])) {
+        echo json_encode(['mensaje' => 'Falta el parámetro id_usuario']);
+        return;
+    }
+
+    $idUsuario = trim($data['id_usuario']);
+
+    // Cargar los datos del usuario
+    $this->M_Modelo->load(['id_usuario = ?', $idUsuario]);
+
+    // Verificar si el usuario existe
+    if ($this->M_Modelo->id_usuario) {
+        $dispo = $this->M_Modelo->getdispo($idUsuario);
+
+        echo json_encode([
+            'mensaje' => 'Topic obtenido correctamente',
+            'topic' => $dispo
+        ]);
+    } else {
+        echo json_encode(['mensaje' => 'Usuario no encontrado']);
+    }
+}
 
 }
 
