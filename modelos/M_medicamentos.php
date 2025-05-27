@@ -2,7 +2,7 @@
 
 class M_medicamentos extends \DB\SQL\Mapper {
     public function __construct() {
-        parent::__construct(\Base::instance()->get('db'), 'medicamentos');
+        parent::__construct(\Base::instance()->get('DB'), 'medicamentos');
     }
 
     public function obtenermedicamentos() {

@@ -4,7 +4,7 @@ class M_datos_fisicos extends \DB\SQL\Mapper
 {
     public function __construct()
     {
-        parent::__construct(\Base::instance()->get('db'), 'datos_fisicos');
+        parent::__construct(\Base::instance()->get('DB'), 'datos_fisicos');
     }
     
     public function listardatosfisicos($id_usuario)

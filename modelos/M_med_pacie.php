@@ -2,7 +2,7 @@
 
 class M_med_pacie extends \DB\SQL\Mapper {
     public function __construct() {
-        parent::__construct(\Base::instance()->get('db'), 'medico_paciente');
+        parent::__construct(\Base::instance()->get('DB'), 'medico_paciente');
     }
 
     public function guardarRelacion($id_medico, $id_usuario) {

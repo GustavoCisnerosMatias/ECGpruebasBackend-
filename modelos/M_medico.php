@@ -2,7 +2,7 @@
 
 class M_medico extends \DB\SQL\Mapper {
     public function __construct() {
-        parent::__construct(\Base::instance()->get('db'), 'medicos');
+        parent::__construct(\Base::instance()->get('DB'), 'medicos');
     }
 
     public function getTopics(){

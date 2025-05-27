@@ -4,7 +4,7 @@ class M_estadousurio_alertas extends \DB\SQL\Mapper
 {
     public function __construct()
     {
-        parent::__construct(\Base::instance()->get('db'), 'alerta_estadousuario');
+        parent::__construct(\Base::instance()->get('DB'), 'alerta_estadousuario');
     }
 
     public function mostrarnotas() {

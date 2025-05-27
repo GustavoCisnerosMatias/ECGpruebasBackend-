@@ -4,7 +4,7 @@ class M_horarios extends \DB\SQL\Mapper
 {
     public function __construct()
     {
-        parent::__construct(\Base::instance()->get('db'), 'horarios');
+        parent::__construct(\Base::instance()->get('DB'), 'horarios');
     }
 
     public function createhorarios($data)

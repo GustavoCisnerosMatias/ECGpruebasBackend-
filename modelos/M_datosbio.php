@@ -4,7 +4,7 @@ class M_datosbio extends \DB\SQL\Mapper
 {
     public function __construct()
     {
-        parent::__construct(\Base::instance()->get('db'), 'd_realtime');
+        parent::__construct(\Base::instance()->get('DB'), 'd_realtime');
     }
 
     public function obtenerdatos($id_usuario, $id_parametro, $fecha_ini, $fecha_fin)

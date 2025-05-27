@@ -3,7 +3,7 @@
 class M_estadoUsuario extends \DB\SQL\Mapper
 {
     public function __construct(){
-        parent::__construct(\Base::instance()->get('db'), 'estadousuarios');
+        parent::__construct(\Base::instance()->get('DB'), 'estadousuarios');
     }
 
     public function mostrarnotas() {
