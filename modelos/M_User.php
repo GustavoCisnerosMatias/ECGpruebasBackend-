@@ -15,7 +15,7 @@ class M_User extends \DB\SQL\Mapper
 
     public function createasis($data)
     {
-        $db = \Base::instance()->get('db');
+        $db = \Base::instance()->get('DB');
         
         $queryMedico = "SELECT id_medico FROM medicos WHERE id_usuario = ?";
         $medico = $db->exec($queryMedico, [$data['id_medicoss']]);
@@ -40,7 +40,7 @@ class M_User extends \DB\SQL\Mapper
 
     public function getMenu($userId)
     {
-        $db = \Base::instance()->get('db');
+        $db = \Base::instance()->get('DB');
         $query = "SELECT m.men_descripcion, m.men_icono, m.men_pagina, m.categoria
                   FROM usuarios u 
                   JOIN seg_accesos a ON u.id_rol = a.id_rol
@@ -51,7 +51,7 @@ class M_User extends \DB\SQL\Mapper
 
     public function getpeso($userId)
     {
-        $db = \Base::instance()->get('db');
+        $db = \Base::instance()->get('DB');
         $query = "SELECT a.peso, a.estatura, d.codigo
                   FROM usuarios u
                   JOIN datos_fisicos a ON u.id_usuario = a.id_usuario
@@ -62,7 +62,7 @@ class M_User extends \DB\SQL\Mapper
 
     public function getdispo($userId)
     {
-        $db = \Base::instance()->get('db');
+        $db = \Base::instance()->get('DB');
         $query = "SELECT t.id_dispo, t.nombre FROM tab_dispositivos t WHERE t.id_usuario = ?";
         return $db->exec($query, $userId);
     }
@@ -189,7 +189,7 @@ class M_User extends \DB\SQL\Mapper
 
     public function guardarToken($usuarioId, $token, $tokenExpiracion)
     {
-        $db = \Base::instance()->get('db');
+        $db = \Base::instance()->get('DB');
         $fechaCreacion = date('Y-m-d H:i:s');
 
         $query = "INSERT INTO recuperacion_contraseñas (id_usuario, token_recuperacion, token_expiracion, fecha_creacion)
@@ -208,7 +208,7 @@ class M_User extends \DB\SQL\Mapper
 
     public function verificarToken($usuarioId, $token)
     {
-        $db = \Base::instance()->get('db');
+        $db = \Base::instance()->get('DB');
 
         $horaActual = new DateTime("now", new DateTimeZone('America/Guayaquil'));
         $horaActualFormato = $horaActual->format('Y-m-d H:i:s');
@@ -230,7 +230,7 @@ class M_User extends \DB\SQL\Mapper
 
     private function marcarTokenComoUtilizado($usuarioId, $token)
     {
-        $db = \Base::instance()->get('db');
+        $db = \Base::instance()->get('DB');
         $query = "UPDATE recuperacion_contraseñas 
                   SET utilizado = 1 
                   WHERE id_usuario = ? AND token_recuperacion = ?";
