@@ -3,6 +3,7 @@
 class M_datatimereal extends \DB\SQL\Mapper {
     public function __construct() {
         //parent::__construct(\Base::instance()->get('DB'), 'd_realtime');
+          $this->db = \Base::instance()->get('DB');
     }
 
     public function obtenerTopicsActivos() {
@@ -14,12 +15,12 @@ class M_datatimereal extends \DB\SQL\Mapper {
     }
 
         // 1. Obtener normas globales
-        public function obtenerNormasGlobales($id_parametro) {
-            return $this->db->exec(
-                'SELECT valor_minimo, valor_maximo FROM parametros_globales WHERE id_parametro = ?',
-                [$id_parametro]
-            )[0] ?? null;
-        }
+    public function obtenerNormasGlobales($id_parametro) {
+        return $this->db->exec(
+            'SELECT valor_minimo, valor_maximo FROM parametros_globales WHERE id_parametro = ?',
+            [$id_parametro]
+        )[0] ?? null;
+    }
         // 1.1 Crear normas globales si no existen
         public function crearNormasGlobales($id_parametro, $min, $max) {
             $this->db->exec(
@@ -37,6 +38,26 @@ class M_datatimereal extends \DB\SQL\Mapper {
                 [$id_usuario, $id_parametro]
             )[0] ?? null;
         }
+        public function obtenerParametrosEstadistica($id_usuario) {
+            // Obtener parámetros globales
+            $parametrosGlobales = $this->db->exec(
+                'SELECT id_parametro, valor_minimo, valor_maximo FROM parametros_globales'
+            );
+
+            // Obtener parámetros del usuario
+            $parametrosUsuario = $this->db->exec(
+                'SELECT id_usuario, id_parametro, media, desviacion_estandar, count, mean_welford, m2_welford 
+                FROM parametros_usuario 
+                WHERE id_usuario = ?',
+                [$id_usuario]
+            );
+
+            return [
+                'globales' => $parametrosGlobales,
+                'usuario' => $parametrosUsuario
+            ];
+        }
+
     
         // 3. Filtrar valores (global y personalizado)
         public function filtrarValores($valores, $minG, $maxG, $minU, $maxU) {
@@ -124,7 +145,8 @@ class M_datatimereal extends \DB\SQL\Mapper {
                 );
             }
         }
-    
+
+
 
 }
 

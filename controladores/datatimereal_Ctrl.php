@@ -12,7 +12,6 @@ class datatimereal_Ctrl {
     }
 
 
-
     // Método para obtener los topics activos desde la base de datos
     public function obtenerTopics() {
         // Obtener los topics usando el modelo de dispositivos
@@ -21,6 +20,26 @@ class datatimereal_Ctrl {
         // Devolver los topics como una respuesta JSON
         echo json_encode(['status' => 'success', 'topics' => $topics]);
     }
+    public function obtenerParametrosEstadistica($f3) {
+    $data = json_decode($f3->get('BODY'), true);
+
+    // Validar JSON y existencia del id_usuario
+    if (json_last_error() !== JSON_ERROR_NONE || !isset($data['id_usuario'])) {
+        echo json_encode(['status' => 'error', 'message' => 'Formato JSON inválido o id_usuario no proporcionado']);
+        return;
+    }
+
+    $id_usuario = $data['id_usuario'];
+
+    // Llamada al modelo para obtener los parámetros
+    $datos = $this->M_Modelo->obtenerParametrosEstadistica($id_usuario);
+
+    // Devolver la respuesta en formato JSON
+    echo json_encode([
+        'status' => 'success',
+        'data' => $datos
+    ]);
+}
 
     public function guardarDatosAgrupados($f3) {
         $data = json_decode($f3->get('BODY'), true);
