@@ -4,7 +4,7 @@ class M_User extends \DB\SQL\Mapper
 {
     public function __construct()
     {
-        parent::__construct(\Base::instance()->get('db'), 'usuarios');
+        parent::__construct(\Base::instance()->get('DB'), 'usuarios');
     }
 
     public function getTodosusuarios()
