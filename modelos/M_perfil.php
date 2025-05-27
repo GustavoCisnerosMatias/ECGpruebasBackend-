@@ -18,14 +18,13 @@ class M_perfil extends \DB\SQL\Mapper {
         }
         return true;
     }
-    //Buscarpor cedula devuelve id
-    public function getIdUsuarioByid($id_usuario)
-    {
+    
+    public function getIdUsuarioByid($id_usuario){
         $this->load(['id_usuario = ?', $id_usuario]);
         if ($this->dry()) {
-            return false; // No se encontró ningún registro con ese id_usuario
+            return false; 
         }
-        return $this->foto; // Devolver la foto asociada al id_usuario
+        return $this->foto;
     }
 
 }

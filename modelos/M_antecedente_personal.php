@@ -2,9 +2,8 @@
 
 class M_antecedente_personal extends \DB\SQL\Mapper {
     public function __construct() {
-        parent::__construct(\Base::instance()->get('DB'), 'AntecedentesPersonal');
+        parent::__construct(\Base::instance()->get('DB'), 'antecedentespersonal');
     }
-
 
     public function createAntecedentePersonal($data) {
         $this->copyFrom($data);
@@ -16,10 +15,8 @@ class M_antecedente_personal extends \DB\SQL\Mapper {
         }
         return $result;
     }
-    
-    // Método para listar antecedentes personales de un paciente específico
+
     public function getAntecedentesPersonales($id_paciente) {
         return $this->find(['id_paciente = ?', $id_paciente]);
     }
-
 }

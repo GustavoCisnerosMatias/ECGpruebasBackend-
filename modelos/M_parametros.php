@@ -6,29 +6,22 @@ class M_parametros extends \DB\SQL\Mapper {
     }
 
    
-     // Crear un nuevo usuario
-     public function createmedico($data)
-     {
-         $this->copyFrom($data);
-         return $this->save();
-     }
-
-     // Crear un nuevo parámetro
-    public function crearParametro($data)
-    {
-        // Copiar los datos del nuevo parámetro
+    public function createmedico($data){
         $this->copyFrom($data);
         return $this->save();
     }
 
-    public function eliminarParametro($id_parametro)
-{
-    // Buscar el parámetro por su ID
-    $this->load(['id_parametro = ?', $id_parametro]);
-    if ($this->dry()) {
-        return false; // No se encontró el parámetro
+    public function crearParametro($data){
+        $this->copyFrom($data);
+        return $this->save();
     }
-    return $this->erase(); // Elimina el parámetro
-}
+
+    public function eliminarParametro($id_parametro){
+        $this->load(['id_parametro = ?', $id_parametro]);
+        if ($this->dry()) {
+            return false; 
+        }
+        return $this->erase();  
+    }
 
 }

@@ -10,10 +10,4 @@ class M_centro extends \DB\SQL\Mapper {
         return $this->db->exec($sql);
     }
 
-     /* // Crear un nuevo usuario
-     public function createpais($data)
-     {
-         $this->copyFrom($data);
-         return $this->save();
-     } */
 }
