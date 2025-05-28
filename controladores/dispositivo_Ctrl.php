@@ -94,56 +94,62 @@ class dispositivo_Ctrl
     ///EDITAR Y CREAR DISPOSITIVOS 
     // Método para editar un dispositivo y crear uno nuevo
     public function editarYCrearDispositivo($f3)
-    {
-        // Obtener el cuerpo de la solicitud y decodificar el JSON
-        $json = $f3->get('BODY');
-        $data = json_decode($json, true);
+{
+    $json = $f3->get('BODY');
+    $data = json_decode($json, true);
 
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            echo json_encode(['mensaje' => 'JSON inválido']);
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        echo json_encode(['mensaje' => 'JSON inválido']);
+        return;
+    }
+
+    $requiredFields = ['id_usuario', 'nombre', 'codigo'];
+    foreach ($requiredFields as $field) {
+        if (!isset($data[$field])) {
+            echo json_encode(['mensaje' => 'Faltan parámetros: ' . $field]);
             return;
         }
-
-        // Verificar si todos los campos necesarios están presentes en los datos JSON
-        $requiredFields = ['id_usuario', 'id_dispo', 'nombre', 'codigo'];
-
-        foreach ($requiredFields as $field) {
-            if (!isset($data[$field])) {
-                echo json_encode(['mensaje' => 'Faltan parámetros: ' . $field]);
-                return;
-            }
-        }
-
-        try {
-            $updateResult = $this->modelo->actualizarEstadoDispositivo($data['id_dispo'], 'I');
-            if ($updateResult) {
-                // Crear una nueva instancia del modelo para evitar problemas de sobreescritura
-                $nuevoModeloDispositivo = new M_dispositivo();
-
-                // Crear un nuevo dispositivo con el estado 'A' (Activo)
-                $nuevoDispositivo = [
-                    'id_usuario' => $data['id_usuario'],
-                    'nombre' => $data['nombre'],
-                    'codigo' => $data['codigo'],
-                    'estado' => 'A'
-                ];
-
-                $createResult = $nuevoModeloDispositivo->createDispositivo($nuevoDispositivo);
-
-                if ($createResult) {
-                    echo json_encode(['mensaje' => 'Nuevo dispositivo actualizado correctamente']);
-                    // Actualizar el estado del dispositivo existente a 'I' (Inactivo)
-                    $updateResult = $this->modelo->actualizarEstadoDispositivo($data['id_dispo'], 'I');
-                } else {
-                    echo json_encode(['mensaje' => 'Error al crear el nuevo dispositivo']);
-                }
-            } else {
-                echo json_encode(['mensaje' => 'Error al actualizar el estado del dispositivo']);
-            }
-        } catch (Exception $e) {
-            echo json_encode(['mensaje' => 'Error al procesar la solicitud: ' . $e->getMessage()]);
-        }
     }
+
+    try {
+        $modeloDispositivo = new M_dispositivo();
+
+        // Verificar si ya existe un dispositivo con ese código y está inactivo
+        $dispositivos = $modeloDispositivo->find([
+            'codigo = ? AND estado = ?', 
+            $data['codigo'], 'I'
+        ]);
+
+        if (!empty($dispositivos)) {
+            // Reactivar el dispositivo existente
+            $dispositivo = $dispositivos[0];
+            $dispositivo->id_usuario = $data['id_usuario'];
+            $dispositivo->estado = 'A';
+            $dispositivo->save();
+
+            echo json_encode(['mensaje' => 'Dispositivo reactivado y enlazado correctamente']);
+        } else {
+            // Crear un nuevo dispositivo
+            $nuevoDispositivo = [
+                'id_usuario' => $data['id_usuario'],
+                'nombre' => $data['nombre'],
+                'codigo' => $data['codigo'],
+                'estado' => 'A'
+            ];
+
+            $createResult = $modeloDispositivo->createDispositivo($nuevoDispositivo);
+
+            if ($createResult) {
+                echo json_encode(['mensaje' => 'Nuevo dispositivo creado y enlazado correctamente']);
+            } else {
+                echo json_encode(['mensaje' => 'Error al crear el nuevo dispositivo']);
+            }
+        }
+    } catch (Exception $e) {
+        echo json_encode(['mensaje' => 'Error al procesar la solicitud: ' . $e->getMessage()]);
+    }
+}
+
 
     
 }
