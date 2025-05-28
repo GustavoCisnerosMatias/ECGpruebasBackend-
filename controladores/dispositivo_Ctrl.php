@@ -93,7 +93,7 @@ class dispositivo_Ctrl
 
     ///EDITAR Y CREAR DISPOSITIVOS 
     // Método para editar un dispositivo y crear uno nuevo
-    public function editarYCrearDispositivo($f3)
+public function editarYCrearDispositivo($f3)
 {
     $json = $f3->get('BODY');
     $data = json_decode($json, true);
@@ -114,14 +114,25 @@ class dispositivo_Ctrl
     try {
         $modeloDispositivo = new M_dispositivo();
 
-        // Verificar si ya existe un dispositivo con ese código y está inactivo
+        // Verificar si el usuario ya tiene un dispositivo activo y desactivarlo
+        $dispositivosActivos = $modeloDispositivo->find([
+            'id_usuario = ? AND estado = ?', 
+            $data['id_usuario'], 'A'
+        ]);
+
+        foreach ($dispositivosActivos as $dispositivoActivo) {
+            $dispositivoActivo->estado = 'I';
+            $dispositivoActivo->save();
+        }
+
+        // Buscar si el dispositivo con el código ya existe y está inactivo
         $dispositivos = $modeloDispositivo->find([
             'codigo = ? AND estado = ?', 
             $data['codigo'], 'I'
         ]);
 
         if (!empty($dispositivos)) {
-            // Reactivar el dispositivo existente
+            // Reactivar y reasignar el dispositivo
             $dispositivo = $dispositivos[0];
             $dispositivo->id_usuario = $data['id_usuario'];
             $dispositivo->estado = 'A';
@@ -129,7 +140,7 @@ class dispositivo_Ctrl
 
             echo json_encode(['mensaje' => 'Dispositivo reactivado y enlazado correctamente']);
         } else {
-            // Crear un nuevo dispositivo
+            // Crear nuevo dispositivo
             $nuevoDispositivo = [
                 'id_usuario' => $data['id_usuario'],
                 'nombre' => $data['nombre'],
