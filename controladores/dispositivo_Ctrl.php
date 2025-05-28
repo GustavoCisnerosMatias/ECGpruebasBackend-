@@ -115,8 +115,7 @@ class dispositivo_Ctrl
         }
 
         try {
-
-
+            $updateResult = $this->modelo->actualizarEstadoDispositivo($data['id_dispo'], 'I');
             if ($updateResult) {
                 // Crear una nueva instancia del modelo para evitar problemas de sobreescritura
                 $nuevoModeloDispositivo = new M_dispositivo();
