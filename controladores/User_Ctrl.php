@@ -260,6 +260,8 @@ public function authenticate($f3)
                     'mensaje' => 'Autenticación exitosa',
                     'id_rol' => $this->M_Modelo->id_rol,
                     'nombre' => $this->M_Modelo->nombre,
+                    'apellido' => $this->M_Modelo->apellido,
+
                     'id_usuario' => $this->M_Modelo->id_usuario,
                     'menu' => $menu,
                     'peso' => $peso,

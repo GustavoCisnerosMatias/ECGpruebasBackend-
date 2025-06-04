@@ -63,7 +63,7 @@ class M_User extends \DB\SQL\Mapper
     public function getdispo($userId)
     {
         $db = \Base::instance()->get('DB');
-        $query = "SELECT t.id_dispo, t.nombre FROM tab_dispositivos t WHERE t.id_usuario = ?";
+        $query = "SELECT t.id_dispo, t.nombre FROM tab_dispositivos t WHERE t.id_usuario = ? AND  t.estado='A'";
         return $db->exec($query, $userId);
     }
 
