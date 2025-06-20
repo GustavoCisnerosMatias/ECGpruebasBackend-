@@ -20,12 +20,11 @@ class M_med_pacie extends \DB\SQL\Mapper {
     }
 
     public function obtenerDatosMedicoPaciente($id_usuario) {
-        $sql = "SELECT medico_paciente.id_medpaci, medico_paciente.id_medico, usuarios.nombre, usuarios.telefono, usuarios.apellido, medico_paciente.estado, c.nombre_centro, e.nombre_esp, TO_BASE64(p.foto) 
+        $sql = "SELECT medico_paciente.id_medpaci, medico_paciente.id_medico, usuarios.nombre, usuarios.telefono, usuarios.apellido, medico_paciente.estado, c.nombre_centro,  TO_BASE64(p.foto) 
         AS foto_base64 FROM medico_paciente 
         JOIN medicos ON medico_paciente.id_medico = medicos.id_medico 
         JOIN usuarios ON medicos.id_usuario = usuarios.id_usuario 
         JOIN centros_hospitalarios c ON c.id_centro = medicos.id_centro 
-        JOIN especialidades e ON e.id_especialidad = medicos.id_especialidad 
         LEFT JOIN perfil p ON p.id_usuario = usuarios.id_usuario 
         WHERE medico_paciente.id_paciente  = ?";
         return $this->db->exec($sql, [$id_usuario]);
