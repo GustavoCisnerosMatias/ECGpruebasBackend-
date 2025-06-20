@@ -10,24 +10,46 @@ class M_alergias extends \DB\SQL\Mapper {
         return $this->db->exec($sql);
     }
 
-    public function obtenerAlergias($id_paciente) {
-        $sql = "SELECT t.nombretipo, t.descripcion, a.*, m.codigo, m.denominacion_comun_internacional, p.foto, u.fecha_nacimiento, u.genero 
-                FROM alergias a 
-                JOIN tiposalergia t ON t.id_tipo = a.id_tipo 
-                JOIN usuarios u ON u.id_usuario = a.id_paciente 
-                LEFT JOIN medicamentos m ON m.id_medic = a.id_medic 
-                JOIN perfil p ON u.id_usuario = p.id_usuario 
-                WHERE a.id_paciente = ?";
-        $result = $this->db->exec($sql, [$id_paciente]);
-
-        foreach ($result as &$row) {
-            if ($row['foto']) {
-                $row['foto'] = 'data:image/jpeg;base64,' . base64_encode($row['foto']);
-            }
-        }
-        return $result;
-    }
+public function obtenerAlergias($id_paciente) {
+    $sql = "SELECT 
+                t.nombretipo AS NombreTipo, 
+                t.descripcion AS DescripcionTipo, 
+                a.id_alergia, 
+                a.descripcion AS Descripcion, 
+                a.nivel AS Nivel, 
+                a.fechacreacion AS FechaCreacion, 
+                m.codigo, 
+                m.denominacion_comun_internacional, 
+                p.foto, 
+                u.fecha_nacimiento, 
+                u.genero AS Genero, 
+                u.nombre, 
+                u.apellido, 
+                u.cedula 
+            FROM 
+                alergias a
+            INNER JOIN 
+                tiposalergia t ON t.id_tipo = a.id_tipo
+            INNER JOIN 
+                usuarios u ON u.id_usuario = a.id_paciente
+            LEFT JOIN 
+                medicamentos m ON m.id_medic = a.id_medic
+            LEFT JOIN 
+                perfil p ON u.id_usuario = p.id_usuario
+            WHERE 
+                a.id_paciente = ?
+            ORDER BY 
+                a.fechacreacion DESC";
     
+    $result = $this->db->exec($sql, [$id_paciente]);
+
+    foreach ($result as &$row) {
+        if ($row['foto']) {
+            $row['foto'] = 'data:image/jpeg;base64,' . base64_encode($row['foto']);
+        }
+    }
+    return $result;
+}
     public function guardarAlergias($datos) {
         $sql = "SELECT id_medico FROM medicos WHERE id_usuario = ?";
         $medico = $this->db->exec($sql, [$datos['id_usuario']]);

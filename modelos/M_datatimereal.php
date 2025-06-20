@@ -33,6 +33,16 @@ class M_datatimereal extends \DB\SQL\Mapper {
             [$id_usuario, $id_parametro]
         )[0] ?? null;
     }
+    public function obtenerdatosagrupados($id_usuario) {
+        $datosagrupados = $this->db->exec(
+            'SELECT * FROM  `datos_agrupados` WHERE id_usuario = ? ORDER BY fecha_registro DESC',
+            [$id_usuario]
+        );
+
+        return [
+            'datosagrupados' => $datosagrupados,
+        ];
+    }
     public function obtenerParametrosEstadistica($id_usuario) {
         $parametrosGlobales = $this->db->exec(
             'SELECT id_parametro, valor_minimo, valor_maximo FROM parametros_globales'
@@ -52,25 +62,13 @@ class M_datatimereal extends \DB\SQL\Mapper {
     }
 
     
-    public function filtrarValores($valores, $minG, $maxG, $minU, $maxU) {
-        $validos = [];
-        $falsos = [];
-        foreach ($valores as $x) {
-            if ($x < $minG || $x > $maxG || $x < $minU || $x > $maxU) {
-                $falsos[] = $x;
-            } else {
-                $validos[] = $x;
-            }
-        }
-        return [$validos, $falsos];
-    }
     
-    public function guardarFalsosPositivos($valores, $idU, $idP, $dur, $disp) {
+    public function guardarFalsosPositivos($valores, $idU, $idP, $cant, $disp) {
         if (empty($valores)) return;
 
         $jsonValores = json_encode($valores);
         $this->db->exec(
-            'INSERT INTO falsos_positivos (id_usuario, id_parametro, valores, duracion, id_dispo)
+            'INSERT INTO falsos_positivos (id_usuario, id_parametro, valores, cantidad, id_dispo)
                 VALUES (?, ?, ?, ?, ?)',
             [$idU, $idP, $jsonValores, $dur, $disp]
         );
@@ -135,9 +133,17 @@ class M_datatimereal extends \DB\SQL\Mapper {
         }
     }
 
+    public function actualizarNormasGlobales($id_parametro, $nuevoMin, $nuevoMax) {
+        $sql = "UPDATE parametros_globales 
+                SET valor_minimo = :min, valor_maximo = :max 
+                WHERE id_parametro = :id";
+
+        $this->db->exec($sql, [
+            ':min' => $nuevoMin,
+            ':max' => $nuevoMax,
+            ':id'  => $id_parametro
+        ]);
+    }
 
 
 }
-
-
-
