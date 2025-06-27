@@ -120,8 +120,16 @@ public function guardarConsultaConRecetas($f3) {
         $observaciones = $data['observaciones'] ?? null;
         $recetas = $data['recetas'] ?? [];  // Si no se envían recetas, será un array vacío
 
-        if (!$id_paciente || !$id_usuario || !$motivo_consulta) {
-            echo json_encode(['mensaje' => 'Parámetros incompletos']);
+        if (!$id_paciente ) {
+            echo json_encode(['mensaje' => 'Parámetros incompletos id_paciente']);
+            return;
+        }
+       if (!$id_usuario ) {
+            echo json_encode(['mensaje' => 'Parámetros incompletos id_usuario']);
+            return;
+        }
+       if (!$motivo_consulta ) {
+            echo json_encode(['mensaje' => 'Parámetros incompletos motivo_consulta']);
             return;
         }
 

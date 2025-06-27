@@ -10,7 +10,7 @@ header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT,PATCH, DELETE");
 
 $f3=require('lib/base.php');
 
-$f3->set('DEBUG',1);
+$f3->set('DEBUG',3);
 if ((float)PCRE_VERSION<8.0)
 	trigger_error('PCRE version is out of date');
 

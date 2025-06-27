@@ -313,18 +313,17 @@ public function createUser($f3)
     ];
 
   
-
-   /* // Verificar si la cédula ya está registrada (descomentar cuando esté implementado)
+   // Verificar si la cédula ya está registrada (descomentar cuando esté implementado)
      if ($this->M_Modelo->checkCedulaExists($data['cedula'])) {
         echo json_encode(['mensaje' => 'La cédula "' . $data['cedula'] . '" ya está registrada en el sistema.']);
         return;
-    }  */
+    }  
 
-    /* // Verificar si el correo electrónico ya está registrado (descomentar cuando esté implementado)
+    // Verificar si el correo electrónico ya está registrado (descomentar cuando esté implementado)
      if ($this->M_Modelo->checkCorreoExists($data['correo_electronico'])) {
         echo json_encode(['mensaje' => 'El correo electrónico "' . $data['correo_electronico'] . '" ya está registrado, ingrese otro.']);
         return;
-    }  */
+    }  
 
 
 
@@ -334,12 +333,40 @@ public function createUser($f3)
     // Crear el nuevo usuario
     $id_usuario = $this->M_Modelo->createUser($data);
 
-    if ($id_usuario) {
-        
+    if ($id_usuario) {    
         echo json_encode(['mensaje' => 'Usuario creado exitosamente', 'id_usuario' => $id_usuario]);
     } else {
         echo json_encode(['mensaje' => 'Ocurrió un error al crear el usuario, inténtelo nuevamente.']);
     }
+}
+
+
+
+public function verificarCedula($f3)
+{
+    // Obtener el cuerpo de la solicitud y decodificar el JSON
+    $json = $f3->get('BODY');
+    $data = json_decode($json, true);
+
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        echo json_encode(['mensaje' => 'El formato de los datos no es válido, por favor revise el JSON.']);
+        return;
+    }
+
+    // Verificar si todos los campos necesarios están presentes
+    $requiredFields = [
+        'cedula' => 'Cédula', 
+    ];
+
+  
+   // Verificar si la cédula ya está registrada (descomentar cuando esté implementado)
+     if ($this->M_Modelo->checkCedulaExists($data['cedula'])) {
+        echo json_encode(['mensaje' => 'La cédula "' . $data['cedula'] . '" ya está registrada en el sistema.', 
+    'state' => 'true']);
+        return;
+    }  
+    echo json_encode(['state' => 'false']);
+
 }
 
 

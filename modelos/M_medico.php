@@ -11,11 +11,10 @@ class M_medico extends \DB\SQL\Mapper {
     }
 
     public function obtenerMedicos() {
-        $sql = "SELECT medicos.id_medico, usuarios.nombre, usuarios.apellido, c.nombre_centro, e.nombre_esp, c.tipo_centro
+        $sql = "SELECT medicos.id_medico, usuarios.nombre, usuarios.apellido, c.nombre_centro,  c.tipo_centro
                 FROM medicos 
                 JOIN usuarios ON medicos.id_usuario = usuarios.id_usuario
                 JOIN centros_hospitalarios c ON c.id_centro = medicos.id_centro
-                JOIN especialidades e ON e.id_especialidad = medicos.id_especialidad
                 WHERE medicos.estado = 'A'";
         return $this->db->exec($sql);
     }

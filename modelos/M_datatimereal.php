@@ -33,10 +33,14 @@ class M_datatimereal extends \DB\SQL\Mapper {
             [$id_usuario, $id_parametro]
         )[0] ?? null;
     }
-    public function obtenerdatosagrupados($id_usuario) {
+    public function obtenerdatosagrupados($id_usuario, $id_parametro, $fechaInicio, $fechaFin) {
         $datosagrupados = $this->db->exec(
-            'SELECT * FROM  `datos_agrupados` WHERE id_usuario = ? ORDER BY fecha_registro DESC',
-            [$id_usuario]
+            'SELECT * FROM `datos_agrupados` 
+            WHERE id_usuario = ? 
+            AND id_parametro = ? 
+            AND fecha_registro BETWEEN ? AND ?
+            ORDER BY fecha_registro DESC',
+            [$id_usuario, $id_parametro, $fechaInicio, $fechaFin]
         );
 
         return [
@@ -63,23 +67,40 @@ class M_datatimereal extends \DB\SQL\Mapper {
 
     
     
-    public function guardarFalsosPositivos($valores, $idU, $idP, $cant, $disp) {
-        if (empty($valores)) return;
-
-        $jsonValores = json_encode($valores);
+    public function guardarFalsosPositivos($falsos, $idU, $idP, $cant, $disp, $id_datos_agrupados) {
+        if (empty($falsos)) return;
+        $falsosLimpiados = array_values($falsos);
         $this->db->exec(
-            'INSERT INTO falsos_positivos (id_usuario, id_parametro, valores, cantidad, id_dispo)
-                VALUES (?, ?, ?, ?, ?)',
-            [$idU, $idP, $jsonValores, $dur, $disp]
+            'INSERT INTO falsos_positivos (id_usuario, id_parametro, valores, cantidad, id_dispo, id_datos_agrupados)
+                VALUES (?, ?, ?, ?, ?, ?)',
+            [$idU, $idP,json_encode($falsosLimpiados) , $cant, $disp, $id_datos_agrupados]
+        );
+    }
+    public function guardardatoslimpios($validos, $idU, $idP, $cant, $disp, $id_datos_agrupados) {
+        if (empty($validos)) return;
+        $valoresLimpiados = array_values($validos);
+        $this->db->exec(
+            'INSERT INTO datos_limpios (id_usuario, id_parametro, valores, cantidad, id_dispo, id_datos_agrupados)
+                VALUES (?, ?, ?, ?, ?, ?)',
+            [$idU, $idP,json_encode($valoresLimpiados), $cant, $disp, $id_datos_agrupados]
         );
     }
 
-    public function guardarDatosAgrupados($id_usuario, $id_parametro, $valores, $duracion, $id_dispo) {
-        $sql = "INSERT INTO datos_agrupados (id_usuario, id_parametro, valores, duracion_segundos, id_dispo)
-                VALUES (?, ?, ?, ?, ?)";
-        return $this->db->exec($sql, [$id_usuario, $id_parametro, json_encode($valores), $duracion, $id_dispo]);
-    }
+    public function guardarDatosAgrupados($id_usuario, $id_parametro, $valores, $duracion, $id_dispo, $cantidad) {
+    $sql = "INSERT INTO datos_agrupados (id_usuario, id_parametro, valores, duracion_segundos, id_dispo, cantidad)
+            VALUES (?, ?, ?, ?, ?, ?)";
     
+    $this->db->exec($sql, [
+        $id_usuario,
+        $id_parametro,
+        json_encode($valores),
+        $duracion,
+        $id_dispo,
+        $cantidad
+    ]);
+
+    return $this->db->lastInsertId();
+    }
     public function actualizarEstadisticas($valores, $userStats, $idU, $idP) {
         $batch_n = 0;
         $batch_mu = 0.0;

@@ -11,18 +11,21 @@ class parametros_Ctrl
 
      // Método para listar usuarios
      public function listadoparametro($f3)
-     {
-         $result = $this->M_Modelo->find();
-         $items = array();
-         foreach ($result as $datos) {
-             $items[] = $datos->cast();
-         }
-         echo json_encode([
-             'mensaje' => count($items) > 0 ? '' : 'Aún no hay registros para mostrar.',
-             'total' => count($items),
-             'datos' => $items
-         ]);
-     }
+{
+    // Filtrar solo los registros con Estado = 'A'
+    $result = $this->M_Modelo->find(['Estado = ?', 'A']);
+
+    $items = array();
+    foreach ($result as $datos) {
+        $items[] = $datos->cast();
+    }
+
+    echo json_encode([
+        'mensaje' => count($items) > 0 ? '' : 'Aún no hay registros activos para mostrar.',
+        'total' => count($items),
+        'datos' => $items
+    ]);
+}
 
 
      // Método para crear un nuevo parámetro

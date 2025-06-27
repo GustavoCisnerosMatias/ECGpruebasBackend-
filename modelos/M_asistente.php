@@ -5,15 +5,36 @@ class M_asistente extends \DB\SQL\Mapper {
         parent::__construct(\Base::instance()->get('DB'), 'asistente');
     }
 
+    // public function actualizardatosfisicos($id_usuario, $peso, $estatura) {
+    //     $sql = "
+    //         INSERT INTO datos_fisicos (id_usuario, peso, estatura) 
+    //         VALUES (?, ?, ?)
+    //         ON DUPLICATE KEY UPDATE 
+    //             peso = VALUES(peso),
+    //             estatura = VALUES(estatura)
+    //     ";
+    //     $stmt = $this->db->prepare($sql);
+    //     return $stmt->execute([$id_usuario, $peso, $estatura]);
+    // }
     public function actualizardatosfisicos($id_usuario, $peso, $estatura) {
-        $sql = "
-            UPDATE datos_fisicos 
-            SET peso = ?, estatura = ? 
-            WHERE id_usuario = ?
-        ";
-        return $this->db->exec($sql, [$peso, $estatura, $id_usuario]);
-    }
+    // 1. Verificar si existe el registro
+    $sqlCheck = "SELECT COUNT(*) as count FROM datos_fisicos WHERE id_usuario = ?";
+    $stmt = $this->db->prepare($sqlCheck);
+    $stmt->execute([$id_usuario]);
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
+    if ($result['count'] > 0) {
+        // Actualizar
+        $sqlUpdate = "UPDATE datos_fisicos SET peso = ?, estatura = ? WHERE id_usuario = ?";
+        $stmt = $this->db->prepare($sqlUpdate);
+        return $stmt->execute([$peso, $estatura, $id_usuario]);
+    } else {
+        // Insertar
+        $sqlInsert = "INSERT INTO datos_fisicos (id_usuario, peso, estatura) VALUES (?, ?, ?)";
+        $stmt = $this->db->prepare($sqlInsert);
+        return $stmt->execute([$id_usuario, $peso, $estatura]);
+    }
+}
     public function obteneradatosfisicospaciente($id_usuario) {
         $sql = "
             SELECT e.* FROM datos_fisicos e 
