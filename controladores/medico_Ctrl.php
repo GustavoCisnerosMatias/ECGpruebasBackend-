@@ -3,10 +3,12 @@
 class medico_Ctrl
 {
     protected $modelo;
+    protected $modeloEspecialidades;
 
     public function __construct()
     {
         $this->modelo = new M_medico();
+        $this->modeloEspecialidades = new M_medicoEspecialidades();
     }
     public function VerificarMedicos($f3)
 {
@@ -146,7 +148,6 @@ class medico_Ctrl
     // Método para crear usuario
     public function createMedico($f3)
     {
-        // Obtener el cuerpo de la solicitud y decodificar el JSON
         $json = $f3->get('BODY');
         $data = json_decode($json, true);
 
@@ -155,28 +156,68 @@ class medico_Ctrl
             return;
         }
 
-        // Verificar si todos los campos necesarios están presentes
-        $requiredFields = [
-            'id_usuario', 'id_centro', 'id_especialidad','estado'
-        ];
+        $requiredFields = ['id_usuario', 'codigo_medico', 'estado', 'id_centro', 'especialidades'];
 
         foreach ($requiredFields as $field) {
             if (!isset($data[$field])) {
-                echo json_encode(['mensaje' => 'Faltan parámetros: ' . $field]);
+                echo json_encode(['mensaje' => 'Falta el parámetro: ' . $field]);
                 return;
             }
         }
 
+        try {
+            $medico = [
+                'id_usuario' => $data['id_usuario'],
+                'codigo_medico' => $data['codigo_medico'],
+                'estado' => $data['estado'],
+                'id_centro' => $data['id_centro'],
+                'fecha_registro' => date('Y-m-d H:i:s')
+            ];
 
-        // Crear el nuevo usuario
-        $result = $this->modelo->createmedico($data);
+            $this->modelo->createmedico($medico);
+            $id_medico = $this->modelo->_id;
 
-        if ($result) {
-            echo json_encode(['mensaje' => 'Usuario creado exitosamente']);
-        } else {
-            echo json_encode(['mensaje' => 'Error al crear el usuario']);
+            foreach ($data['especialidades'] as $id_especialidad) {
+                $this->modeloEspecialidades->crearEspecialidadMedico($id_medico, $id_especialidad);
+            }
+
+            echo json_encode(['mensaje' => 'Médico y especialidades registrados correctamente']);
+        } catch (Exception $e) {
+            echo json_encode(['mensaje' => 'Error al crear médico: ' . $e->getMessage()]);
         }
     }
+    // {
+    //     // Obtener el cuerpo de la solicitud y decodificar el JSON
+    //     $json = $f3->get('BODY');
+    //     $data = json_decode($json, true);
+
+    //     if (json_last_error() !== JSON_ERROR_NONE) {
+    //         echo json_encode(['mensaje' => 'JSON inválido']);
+    //         return;
+    //     }
+
+    //     // Verificar si todos los campos necesarios están presentes
+    //     $requiredFields = [
+    //         'id_usuario', 'id_centro', 'id_especialidad','estado'
+    //     ];
+
+    //     foreach ($requiredFields as $field) {
+    //         if (!isset($data[$field])) {
+    //             echo json_encode(['mensaje' => 'Faltan parámetros: ' . $field]);
+    //             return;
+    //         }
+    //     }
+
+
+    //     // Crear el nuevo usuario
+    //     $result = $this->modelo->createmedico($data);
+
+    //     if ($result) {
+    //         echo json_encode(['mensaje' => 'Usuario creado exitosamente']);
+    //     } else {
+    //         echo json_encode(['mensaje' => 'Error al crear el usuario']);
+    //     }
+    // }
 
 
 

@@ -10,5 +10,37 @@ class M_especialidad extends \DB\SQL\Mapper {
         return $this->db->exec($sql);
     }
 
+    // Crear nueva especialidad
+    public function crearEspecialidad($data) {
+        $this->reset();
+        $this->nombre_esp = $data['nombre_esp'];
+        $this->estado = $data['estado'];
+        $this->save();
+        return $this->id_especialidad;
+    }
 
+    // Actualizar especialidad
+    public function actualizarEspecialidad($data) {
+        $this->load(['id_especialidad=?', $data['id_especialidad']]);
+        if (!$this->dry()) {
+            $this->nombre_esp = $data['nombre_esp'];
+            $this->estado = $data['estado'];
+            $this->save();
+        }
+    }
+
+    // Eliminar especialidad (cambio de estado a 'I')
+    public function eliminarEspecialidad($id) {
+        $this->load(['id_especialidad=?', $id]);
+        if (!$this->dry()) {
+            $this->estado = 'I';
+            $this->save();
+        }
+    }
+
+    // Buscar especialidad por ID
+    public function buscarEspecialidadPorId($id) {
+        $this->load(['id_especialidad=?', $id]);
+        return $this->cast();
+    }
 }

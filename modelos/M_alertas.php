@@ -16,8 +16,20 @@ class M_alertas extends \DB\SQL\Mapper {
             $id_datos,
             $contenido
         ]);
-
-
     }
+
+
+    // Obtener alertas por usuario
+    public function obtenerAlertasPorUsuario($id_usuario) {
+        $sql = "SELECT * FROM alertas WHERE id_usuario = ? ORDER BY fecha_alerta DESC";
+        return $this->db->exec($sql, [$id_usuario]);
+    }
+
+    // Marcar una alerta como vista (estado_alerta = 0)
+    public function marcarComoVista($id_alerta) {
+        $sql = "UPDATE alertas SET estado_alerta = 0 WHERE id_alertas = ?";
+        return $this->db->exec($sql, [$id_alerta]);
+    }
+
 
 }

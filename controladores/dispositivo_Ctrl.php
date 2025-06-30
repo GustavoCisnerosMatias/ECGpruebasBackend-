@@ -162,7 +162,35 @@ public function editarYCrearDispositivo($f3)
 }
 
 
-    
+    // Método para desactivar un dispositivo por su ID
+    public function desactivarDispositivo($f3)
+    {
+        $json = $f3->get('BODY');
+        $data = json_decode($json, true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            echo json_encode(['mensaje' => 'JSON inválido']);
+            return;
+        }
+
+        if (!isset($data['id_dispo'])) {
+            echo json_encode(['mensaje' => 'Falta el parámetro: id_dispo']);
+            return;
+        }
+
+        try {
+            $result = $this->modelo->actualizarEstadoDispositivo($data['id_dispo'], 'I');
+
+            if ($result) {
+                echo json_encode(['mensaje' => 'Dispositivo desactivado correctamente']);
+            } else {
+                echo json_encode(['mensaje' => 'Dispositivo no encontrado o ya está inactivo']);
+            }
+        } catch (Exception $e) {
+            echo json_encode(['mensaje' => 'Error al desactivar dispositivo: ' . $e->getMessage()]);
+        }
+    }
+
 }
 
 

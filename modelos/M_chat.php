@@ -42,7 +42,7 @@ class M_chat extends \DB\SQL\Mapper {
     }
 
     public function mostrarchat($id_usuario, $id_medico) {
-        $sql = "SELECT * FROM mensajes WHERE id_usuario = ? AND id_medico = ?";
+        $sql = "SELECT * FROM mensajes WHERE id_usuario = ? AND id_medico = ? ORDER BY fecha_envio DESC;";
         return $this->db->exec($sql, [$id_usuario, $id_medico]);
     }
 

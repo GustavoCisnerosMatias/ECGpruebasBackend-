@@ -6,24 +6,13 @@ class M_antecedentes_flia extends \DB\SQL\Mapper {
     }
 
     public function obtenerante_flia_xid($id_paciente) {
-        $sql = "SELECT a.*, u.fecha_nacimiento, u.genero, p.foto
+        $sql = "SELECT a.*, u.fecha_nacimiento, u.genero
                 FROM antecedentesfamiliares a 
                 JOIN usuarios u ON u.id_usuario = a.id_paciente
-                JOIN perfil p ON u.id_usuario = p.id_usuario 
                 WHERE a.id_paciente = ?";
         
         $result = $this->db->exec($sql, [$id_paciente]);
         
-        if ($result === false) {
-            error_log("Error al obtener antecedentes familiares: " . $this->db->error);
-            return null;
-        }
-        
-        foreach ($result as &$row) {
-            if ($row['foto']) {
-                $row['foto'] = 'data:image/jpeg;base64,' . base64_encode($row['foto']);
-            }
-        }
     
         return $result; 
     }
@@ -97,7 +86,7 @@ class M_antecedentes_flia extends \DB\SQL\Mapper {
         if ($resultado) {
             return 'actualizado';
         } else {
-            error_log("Error al actualizar el antecedente familiar con id_antecedente: " . $datos['id_antecedente_familiar']);
+            error_log("Error al actualizar el antecedente familiar con id_antecedente: " .$datos['id_antecedente']);
             return 'error_actualizado';
         }
     }

@@ -9,7 +9,6 @@ class centro_Ctrl
         $this->modelo = new M_centro();
     }
 
-//pais
     public function mostrarCentro($f3)
     {
         try {
@@ -23,6 +22,45 @@ class centro_Ctrl
         } catch (Exception $e) {
             echo json_encode(['mensaje' => 'Error al obtener el centro hospitalario: ' . $e->getMessage()]);
         }
+    }
+
+     public function buscarCentroPorId($f3) {
+        $id = $f3->get('PARAMS.id');
+        $datos = $this->modelo->buscarPorId($id);
+        if ($datos) {
+            echo json_encode(['status' => 'success', 'centro' => $datos[0]]);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Centro no encontrado']);
+        }
+    }
+
+    public function insertarCentro($f3) {
+        $data = json_decode($f3->get('BODY'), true);
+        if (!isset($data['nombre_centro'], $data['tipo_centro'])) {
+            echo json_encode(['status' => 'error', 'message' => 'Datos incompletos']);
+            return;
+        }
+
+        $this->modelo->insertarCentro($data['nombre_centro'], $data['tipo_centro']);
+        echo json_encode(['status' => 'success', 'message' => 'Centro creado']);
+    }
+
+    public function actualizarCentro($f3) {
+        $id = $f3->get('PARAMS.id');
+        $data = json_decode($f3->get('BODY'), true);
+        if (!isset($data['nombre_centro'], $data['tipo_centro'])) {
+            echo json_encode(['status' => 'error', 'message' => 'Datos incompletos']);
+            return;
+        }
+
+        $this->modelo->actualizarCentro($id, $data['nombre_centro'], $data['tipo_centro']);
+        echo json_encode(['status' => 'success', 'message' => 'Centro actualizado']);
+    }
+
+    public function eliminarCentro($f3) {
+        $id = $f3->get('PARAMS.id');
+        $this->modelo->eliminarCentro($id);
+        echo json_encode(['status' => 'success', 'message' => 'Centro eliminado']);
     }
 
    

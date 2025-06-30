@@ -44,27 +44,21 @@ class M_consultas extends \DB\SQL\Mapper {
     }
 
     public function getantecedentespersonales($id_paciente) {
-        $sql = "SELECT a.*, u.fecha_nacimiento, u.genero, p.foto, u.nombre, u.apellido, u.cedula
+        $sql = "SELECT a.*, u.fecha_nacimiento, u.genero, u.nombre, u.apellido, u.cedula
                 FROM consultas a 
                 JOIN usuarios u ON u.id_usuario = a.id_paciente
-                JOIN perfil p ON u.id_usuario = p.id_usuario 
                 WHERE a.id_paciente = ?";
         
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([$id_paciente]);
-        $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // $stmt = $this->db->prepare($sql);
+        // $stmt->execute([$id_paciente]);
+        // $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-        if ($result === false) {
-            error_log("Error al obtener antecedentes personales: " . $this->db->errorInfo()[2]);
-            return null;
-        }
+        // if ($result === false) {
+        //     error_log("Error al obtener antecedentes personales: " . $this->db->errorInfo()[2]);
+        //     return null;
+        // }
 
-        foreach ($result as &$row) {
-            if (isset($row['foto']) && $row['foto'] !== null) {
-                $row['foto'] = 'data:image/jpeg;base64,' . base64_encode($row['foto']);
-            }
-        }
 
-        return $result; 
+        return $this->db->exec($sql, [$id_paciente]);
     }
 }
