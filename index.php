@@ -1,5 +1,4 @@
 <?php
-//require_once 'vendor/autoload.php'; 
 //headers
 header("Access-Control-Allow-Origin: http://localhost:8100");
 header('Content-type: application/json; charset=utf-8');
@@ -7,104 +6,63 @@ header('Access-Control-Allow-Origin: *');
 header("Access-Control-Allow-Headers: Content-Type, Authorization,X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT,PATCH, DELETE");
 
+error_log("--- DEBUG INDEX: Punto 1 - Headers configurados. ---");
 
 $f3=require('lib/base.php');
 
-$f3->set('DEBUG',3);
+date_default_timezone_set('America/Guayaquil');
+$f3->set('DEBUG',1);
 if ((float)PCRE_VERSION<8.0)
-	trigger_error('PCRE version is out of date');
+    trigger_error('PCRE version is out of date');
 
 // Load configuration
 $f3->config('config.ini');
-$f3->config('routes.ini');
+ $f3->config('routes.ini');
+
 
 //configurar la conexion con la basede datos
-$f3->set('DB', new DB\SQL('mysql:host=' . $f3->get('database.host') . ';port='. $f3->get('database.portBD') .';dbname=' . $f3->get('database.dbname'), $f3->get('database.user'), $f3->get('database.pass')), $options = array(
-    \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-    \PDO::ATTR_PERSISTENT => TRUE, 
-    \PDO::MYSQL_ATTR_COMPRESS => TRUE, 
-));
-// Crear instancia del controlador
-$controlador = new datatimereal_Ctrl();
+// $f3->set('DB', new DB\SQL('mysql:host=' . $f3->get('database.host') . ';port='. $f3->get('database.portBD') .';dbname=' . $f3->get('database.dbname'), $f3->get('database.user'), $f3->get('database.pass')), $options = array(
+//     \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+//     \PDO::ATTR_PERSISTENT => TRUE,
+//     \PDO::MYSQL_ATTR_COMPRESS => TRUE,
+// ));
+// Conexión a base de datos y zona horaria
+$db = new DB\SQL(
+    'mysql:host=' . $f3->get('database.host') . ';port=' . $f3->get('database.portBD') . ';dbname=' . $f3->get('database.dbname'),
+    $f3->get('database.user'),
+    $f3->get('database.pass'),
+    array(
+        \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+        \PDO::ATTR_PERSISTENT => TRUE,
+        \PDO::MYSQL_ATTR_COMPRESS => TRUE
+    )
+);
 
-// Definir la ruta para recibir los datos de MQTT
-$f3->route('POST /guardar-datos', [$controlador, 'guardarDatos']);
+// ✅ Zona horaria para MySQL
+$db->exec("SET time_zone = 'America/Guayaquil'");
+
+// ✅ Guardar en F3
+$f3->set('DB', $db);
 
 
+// Tus rutas GET / y /userref
 $f3->route('GET /',
-	function($f3) {
-		$classes=array(
-			'Base'=>
-				array(
-					'hash',
-					'json',
-					'session',
-					'mbstring'
-				),
-			'Cache'=>
-				array(
-					'apc',
-					'apcu',
-					'memcache',
-					'memcached',
-					'redis',
-					'wincache',
-					'xcache'
-				),
-			'DB\SQL'=>
-				array(
-					'pdo',
-					'pdo_dblib',
-					'pdo_mssql',
-					'pdo_mysql',
-					'pdo_odbc',
-					'pdo_pgsql',
-					'pdo_sqlite',
-					'pdo_sqlsrv'
-				),
-			'DB\Jig'=>
-				array('json'),
-			'DB\Mongo'=>
-				array(
-					'json',
-					'mongo'
-				),
-			'Auth'=>
-				array('ldap','pdo'),
-			'Bcrypt'=>
-				array(
-					'openssl'
-				),
-			'Image'=>
-				array('gd'),
-			'Lexicon'=>
-				array('iconv'),
-			'SMTP'=>
-				array('openssl'),
-			'Web'=>
-				array('curl','openssl','simplexml'),
-			'Web\Geo'=>
-				array('geoip','json'),
-			'Web\OpenID'=>
-				array('json','simplexml'),
-			'Web\OAuth2'=>
-				array('json'),
-			'Web\Pingback'=>
-				array('dom','xmlrpc'),
-			'CLI\WS'=>
-				array('pcntl')
-		);
-		$f3->set('classes',$classes);
-		$f3->set('content','welcome.htm');
-		echo View::instance()->render('layout.htm');
-	}
+    function($f3) {
+        error_log("--- DEBUG INDEX: Ruta principal '/' ejecutada. ---");
+        $classes=array( /* ... */ );
+        $f3->set('classes',$classes);
+        $f3->set('content','welcome.htm');
+        echo View::instance()->render('layout.htm');
+    }
 );
 
 $f3->route('GET /userref',
-	function($f3) {
-		$f3->set('content','userref.htm');
-		echo View::instance()->render('layout.htm');
-	}
+    function($f3) {
+        error_log("--- DEBUG INDEX: Ruta '/userref' ejecutada. ---");
+        $f3->set('content','userref.htm');
+        echo View::instance()->render('layout.htm');
+    }
 );
+
 
 $f3->run();

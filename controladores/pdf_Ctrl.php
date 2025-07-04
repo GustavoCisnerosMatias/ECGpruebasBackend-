@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__ . '/../lib/tcpdf/tcpdf.php';
+require_once 'lib\middleware\JwtMiddleware.php';
 
 class pdf_Ctrl {
 

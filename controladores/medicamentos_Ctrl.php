@@ -1,5 +1,5 @@
 <?php
-
+require_once 'lib\middleware\JwtMiddleware.php';
 class medicamentos_Ctrl
 {
     protected $modelo;
@@ -12,6 +12,8 @@ class medicamentos_Ctrl
 //medicamentos listar todo
     public function mostrarmedicamentos($f3)
     {
+        $decoded = validateJWT($f3);
+        if (!$decoded) return;
         try {
             $medicamentos = $this->modelo->obtenermedicamentos();
 

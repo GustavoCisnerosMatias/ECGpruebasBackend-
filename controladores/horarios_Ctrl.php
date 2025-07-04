@@ -1,4 +1,5 @@
 <?php
+require_once 'lib\middleware\JwtMiddleware.php';
 
 class horarios_Ctrl
 {

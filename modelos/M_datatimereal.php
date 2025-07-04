@@ -165,6 +165,11 @@ class M_datatimereal extends \DB\SQL\Mapper {
             ':id'  => $id_parametro
         ]);
     }
+    public function guardarNormasGlobales($id_parametro, $min, $max) {
+    $sql = "INSERT INTO parametros_globales (id_parametro, valor_minimo, valor_maximo)
+            VALUES (?, ?, ?)";
+    $this->db->exec($sql, [$id_parametro, $min, $max]);
+}
 
 
 }

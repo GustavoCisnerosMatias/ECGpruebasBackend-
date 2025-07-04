@@ -1,12 +1,24 @@
 <?php
+require_once 'lib\middleware\JwtMiddleware.php';
 
 require_once 'phpmailer/PHPMailer.php';
 require_once 'phpmailer/SMTP.php';
 require_once 'phpmailer/Exception.php';
 
+require_once  'jwt/JWT.php';
+require_once 'jwt/Key.php';
+require_once  'jwt/ExpiredException.php';
+require_once 'jwt/BeforeValidException.php';
+require_once  'jwt/SignatureInvalidException.php';
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
+use Firebase\JWT\JWT;
+
+
+require_once 'lib\middleware\JwtMiddleware.php';
+
 
 function loadEnv($path) {
     if (!file_exists($path)) return;
@@ -224,7 +236,6 @@ class User_Ctrl
 // Método para manejar la autenticación de usuario
 public function authenticate($f3)
 {
-   // error_log("POST Data: " . print_r($f3->get('POST'), true));
 
     $cedula = $f3->get('POST.cedula');
     $password = $f3->get('POST.contrasena');
@@ -254,6 +265,20 @@ public function authenticate($f3)
                 $menu = $this->M_Modelo->getMenu($this->M_Modelo->id_usuario);
                 $peso = $this->M_Modelo->getpeso($this->M_Modelo->id_usuario);
                 $dispo = $this->M_Modelo->getdispo($this->M_Modelo->id_usuario);
+                $key = 'viteced2025viteced';
+
+                // Crear el payload del token
+                $payload = [
+                    'iss' => 'http://localhost', // o tu dominio
+                    'iat' => time(),
+                    'exp' => time() + (60 * 60), // 1 hora
+                    'id_usuario' => $this->M_Modelo->id_usuario,
+                    'nombre' => $this->M_Modelo->nombre,
+                    'id_rol' => $this->M_Modelo->id_rol
+                ];
+
+                // Generar el JWT
+                $jwt = JWT::encode($payload, $key, 'HS256');
 
                 // Construir la respuesta JSON
                 echo json_encode([
@@ -261,7 +286,7 @@ public function authenticate($f3)
                     'id_rol' => $this->M_Modelo->id_rol,
                     'nombre' => $this->M_Modelo->nombre,
                     'apellido' => $this->M_Modelo->apellido,
-
+                    'token' => $jwt,
                     'id_usuario' => $this->M_Modelo->id_usuario,
                     'menu' => $menu,
                     'peso' => $peso,

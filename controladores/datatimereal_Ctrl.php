@@ -1,4 +1,5 @@
 <?php
+require_once 'lib\middleware\JwtMiddleware.php';
 
 class datatimereal_Ctrl {
 
@@ -114,12 +115,18 @@ class datatimereal_Ctrl {
 
         // Paso 0: Obtener normas globales del parámetro
         $normasGlobales = $this->M_Modelo->obtenerNormasGlobales($idP);
+
         if (!$normasGlobales) {
-            echo json_encode(['status' => 'error', 'message' => 'No existen normas globales para este parámetro']);
-            return;
+            // No existen normas globales → calcular mínimo y máximo de los valores recibidos
+            $minGlobal = min($vals);
+            $maxGlobal = max($vals);
+
+            // Guardar esas normas globales para que sirvan en el futuro
+            $this->M_Modelo->guardarNormasGlobales($idP, $minGlobal, $maxGlobal);
+        } else {
+            $minGlobal = (float) $normasGlobales['valor_minimo'];
+            $maxGlobal = (float) $normasGlobales['valor_maximo'];
         }
-        $minGlobal = (float) $normasGlobales['valor_minimo'];
-        $maxGlobal = (float) $normasGlobales['valor_maximo'];
 
         // Paso 0.1: Filtrar valores usando las normas globales
         $valsLimpiosGlobales = array_filter($vals, function ($x) use ($minGlobal, $maxGlobal) {
@@ -175,7 +182,7 @@ class datatimereal_Ctrl {
 
         if (!empty($falsos)) {
             $this->M_Modelo->guardarFalsosPositivos($falsos, $idU, $idP, count($falsos), $disp, $idDatoAgrupado);
-
+            
             // Calcular porcentaje
             $porcentajeFalsos = (count($falsos) / count($valsLimpiosGlobales)) * 100;
 

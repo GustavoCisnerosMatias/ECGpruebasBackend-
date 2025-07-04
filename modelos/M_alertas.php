@@ -5,6 +5,7 @@ class M_alertas extends \DB\SQL\Mapper {
         parent::__construct(\Base::instance()->get('DB'), 'alertas');
     }
     public function crearAlerta($id_usuario, $vista, $id_datos, $contenido) {
+        
         $fecha_alerta = date('Y-m-d H:i:s');
         $sql = "INSERT INTO alertas (id_usuario, vista, estado_alerta, fecha_alerta, id_datos, contenido)
                 VALUES (?, ?, ?, ?, ?, ?)";

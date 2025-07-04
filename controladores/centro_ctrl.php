@@ -1,4 +1,5 @@
 <?php
+require_once 'lib\middleware\JwtMiddleware.php';
 
 class centro_Ctrl
 {
