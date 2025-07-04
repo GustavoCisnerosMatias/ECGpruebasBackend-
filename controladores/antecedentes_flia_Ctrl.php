@@ -1,6 +1,5 @@
 <?php
-require_once 'lib\middleware\JwtMiddleware.php';
-
+require_once('lib/middleware/JwtMiddleware.php');
 class antecedentes_flia_Ctrl
 {
     protected $modelo;

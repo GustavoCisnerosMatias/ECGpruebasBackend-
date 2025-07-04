@@ -1,6 +1,5 @@
 <?php
-require_once 'lib\middleware\JwtMiddleware.php';
-
+require_once('lib/middleware/JwtMiddleware.php');
 class medico_Ctrl
 {
     protected $modelo;

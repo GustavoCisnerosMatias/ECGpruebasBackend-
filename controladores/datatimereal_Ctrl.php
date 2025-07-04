@@ -1,6 +1,5 @@
 <?php
-require_once 'lib\middleware\JwtMiddleware.php';
-
+require_once('lib/middleware/JwtMiddleware.php');
 class datatimereal_Ctrl {
 
     protected $M_Modelo;

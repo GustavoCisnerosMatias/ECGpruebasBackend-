@@ -1,6 +1,5 @@
 <?php
-require_once 'lib\middleware\JwtMiddleware.php';
-
+require_once('lib/middleware/JwtMiddleware.php');
 class reportes_Ctrl {
 
     // Método para obtener todos los reportes según un rango de fechas

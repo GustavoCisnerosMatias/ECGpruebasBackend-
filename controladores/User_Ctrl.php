@@ -1,6 +1,5 @@
 <?php
-require_once 'lib\middleware\JwtMiddleware.php';
-
+require_once('lib/middleware/JwtMiddleware.php');
 require_once 'phpmailer/PHPMailer.php';
 require_once 'phpmailer/SMTP.php';
 require_once 'phpmailer/Exception.php';
@@ -17,8 +16,7 @@ use PHPMailer\PHPMailer\Exception;
 use Firebase\JWT\JWT;
 
 
-require_once 'lib\middleware\JwtMiddleware.php';
-
+require_once('lib/middleware/JwtMiddleware.php');
 
 function loadEnv($path) {
     if (!file_exists($path)) return;
