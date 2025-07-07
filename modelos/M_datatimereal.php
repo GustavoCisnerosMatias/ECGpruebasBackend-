@@ -47,6 +47,19 @@ class M_datatimereal extends \DB\SQL\Mapper {
             'datosagrupados' => $datosagrupados,
         ];
     }
+
+
+    public function obtenerdatosagrupadosxID($id) {
+        $datosagrupados = $this->db->exec(
+            'SELECT * FROM `datos_agrupados` 
+            WHERE id = ? ',
+            [$id]
+        );
+
+        return [
+            'datosagrupado' => $datosagrupados,
+        ];
+    }
     public function obtenerParametrosEstadistica($id_usuario) {
         $parametrosGlobales = $this->db->exec(
             'SELECT id_parametro, valor_minimo, valor_maximo FROM parametros_globales'

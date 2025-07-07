@@ -232,4 +232,57 @@ class datatimereal_Ctrl {
         }
     }
 
+
+
+
+    public function obtenerdatosagrupadosxID($f3) {
+        $decoded = validateJWT($f3);
+        if (!$decoded) return;
+        $data = json_decode($f3->get('BODY'), true);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            echo json_encode(['status' => 'error', 'message' => 'Formato JSON inválido']);
+            return;
+        }
+
+        if (!isset( $data['id_dato'])) {
+            echo json_encode([
+                'status' => 'error', 
+                'message' => 'Faltan campos requeridos',
+                'campos_faltantes' => [
+                    !isset($data['id_dato']) ? 'id_dato' : null
+                ]
+            ]);
+            return;
+        }
+
+        $id_dato = $data['id_dato'];
+
+        // Llamada al modelo para obtener los parámetros
+        $datos = $this->M_Modelo->obtenerdatosagrupadosxID($id_dato);
+
+        // Devolver la respuesta en formato JSON
+        echo json_encode([
+            'status' => 'success',
+            'data' => $datos
+        ]);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

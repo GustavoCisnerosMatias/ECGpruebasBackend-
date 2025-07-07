@@ -8,57 +8,55 @@ class datos_bio_Ctrl
     {
         $this->modelo = new M_datosbio();
     }
+    public function obtenerDatosPorUsuario($f3)
+        {
+        $decoded = validateJWT($f3);
+        if (!$decoded) return;
 
-    // Método para obtener datos en tiempo real basados en id_usuario, id_parametro y rango de fechas
-    public function obtenerDatospara($f3)
-    {
-            $decoded = validateJWT($f3);
-    if (!$decoded) return;
-        // Verificar que la solicitud sea de tipo POST
+        // Validar método POST
         if ($f3->get('VERB') !== 'POST') {
             echo json_encode(['mensaje' => 'Método no permitido, use POST']);
             return;
         }
 
-        // Obtener los parámetros desde el cuerpo de la solicitud (asumiendo que es un JSON)
+        // Obtener datos del body
         $data = json_decode($f3->get('BODY'), true);
-
-        // Validar que el cuerpo de la solicitud sea un JSON válido
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            echo json_encode(['mensaje' => 'Solicitud malformada']);
+        if (json_last_error() !== JSON_ERROR_NONE || !isset($data['id_usuario'])) {
+            echo json_encode(['mensaje' => 'Solicitud malformada o falta id_usuario']);
             return;
         }
 
-        // Obtener y validar los parámetros
-        $id_usuario = isset($data['id_usuario']) ? (int)$data['id_usuario'] : null;
-        $id_parametro = isset($data['id_parametro']) ? (int)$data['id_parametro'] : null;
-        $fecha_ini = isset($data['fecha_ini']) ? $data['fecha_ini'] : null;
-        $fecha_fin = isset($data['fecha_fin']) ? $data['fecha_fin'] : null;
-
-        if (!$id_usuario || !$id_parametro || !$fecha_ini || !$fecha_fin) {
-            echo json_encode(['mensaje' => 'Parámetros incompletos']);
-            return;
-        }
-
-        // Verificar si las fechas tienen el formato correcto (YYYY-MM-DD)
-        if (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $fecha_ini) || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $fecha_fin)) {
-            echo json_encode(['mensaje' => 'Formato de fecha incorrecto']);
-            return;
-        }
+        $id_usuario = (int)$data['id_usuario'];
 
         try {
-            // Obtener los datos del modelo
-            $datos = $this->modelo->obtenerDatos($id_usuario, $id_parametro, $fecha_ini, $fecha_fin);
+            $datos = $this->modelo->obtenerPorUsuario($id_usuario);
 
             if ($datos) {
-                echo json_encode($datos);
+                echo json_encode(['datos_manuales' => $datos]);
             } else {
-                echo json_encode(['mensaje' => 'No se encontraron datos']);
+                echo json_encode(['mensaje' => 'No se encontraron datos para el usuario']);
             }
         } catch (Exception $e) {
             echo json_encode(['mensaje' => 'Error al obtener datos: ' . $e->getMessage()]);
         }
     }
+
+
+    // POST: Crear un nuevo dato manual
+    public function crearDatoManual($f3)
+    {
+        $decoded = validateJWT($f3);
+        if (!$decoded) return;
+
+        try {
+            $data = json_decode($f3->get('BODY'), true);
+            $resultado = $this->modelo->guardarDato($data);
+            echo json_encode(['success' => true, 'mensaje' => 'Dato manual creado', 'data' => $resultado]);
+        } catch (Exception $e) {
+            echo json_encode(['success' => false, 'mensaje' => 'Error al crear dato: ' . $e->getMessage()]);
+        }
+    }
+
 }
 
 

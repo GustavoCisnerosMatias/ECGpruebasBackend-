@@ -2,24 +2,25 @@
 
 class M_datosbio extends \DB\SQL\Mapper
 {
-    public function __construct()
-    {
-        parent::__construct(\Base::instance()->get('DB'), 'd_realtime');
+
+
+    public function __construct() {
+        $db = Base::instance()->get('DB');
+        parent::__construct($db, 'datos_manuales');
     }
 
-    public function obtenerdatos($id_usuario, $id_parametro, $fecha_ini, $fecha_fin)
-    {
-        $sql = "
-            SELECT r.fecha, p.nombre, p.unidad_medida, r.valor, t.codigo
-            FROM d_realtime r
-            JOIN tab_dispositivos t ON r.codigo = t.codigo
-            JOIN parametros p ON p.id_parametro = r.id_parametro
-            JOIN usuarios u ON u.id_usuario = t.id_usuario
-            WHERE u.id_usuario = ?
-            AND r.id_parametro = ?
-            AND r.fecha BETWEEN ? AND ?
-        ";
-
-        return $this->db->exec($sql, [$id_usuario, $id_parametro, $fecha_ini, $fecha_fin]);
+    public function guardarDato($data) {
+        $this->reset();
+        $this->id_usuario = $data['id_usuario'];
+        $this->fecha_registro = $data['fecha_registro'];
+        $this->datos = $data['datos'];
+        $this->id_parametro = $data['id_parametro'];
+        $this->save();
     }
+    public function obtenerPorUsuario($id_usuario)
+    {
+        $sql = "SELECT id, id_usuario, fecha_registro, datos, id_parametro FROM datos_manuales WHERE id_usuario = :id_usuario";
+        return $this->db->exec($sql, [':id_usuario' => $id_usuario]);
+    }
+
 }

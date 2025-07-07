@@ -28,7 +28,7 @@ function validateJWT($f3, $secretKey = 'viteced2025viteced', $algorithm = 'HS256
         $decoded = JWT::decode($token, new Key($secretKey, $algorithm));
         return $decoded;
     } catch (\Firebase\JWT\ExpiredException $e) {
-        echo json_encode(['mensaje' => 'Token expirado']);
+        echo json_encode(['mensaje' => 'Token expirado, vuelve a iniciar sesion']);
     } catch (\Firebase\JWT\SignatureInvalidException $e) {
         echo json_encode(['mensaje' => 'Firma del token inválida']);
     } catch (\Firebase\JWT\BeforeValidException $e) {
