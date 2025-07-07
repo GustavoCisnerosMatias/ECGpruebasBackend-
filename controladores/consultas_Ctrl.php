@@ -12,6 +12,8 @@ class consultas_Ctrl
 
 
     public function listarAntecedentesPersonales($f3, $params) {
+            $decoded = validateJWT($f3);
+    if (!$decoded) return;
         $jsonInput = file_get_contents("php://input");
         $data = json_decode($jsonInput, true);
     
@@ -50,6 +52,8 @@ class consultas_Ctrl
 
 
     public function listarConsultas($f3) {
+            $decoded = validateJWT($f3);
+    if (!$decoded) return;
         try {
             // Obtener los datos en formato JSON
             $data = json_decode($f3->get('BODY'), true); // Decodificamos el cuerpo JSON como un array asociativo
@@ -86,6 +90,8 @@ class consultas_Ctrl
 
    // Método para listar recetas de un paciente específico
 public function listarRecetas($f3) {
+        $decoded = validateJWT($f3);
+    if (!$decoded) return;
     try {
         $data = json_decode($f3->get('BODY'), true); 
         $id_paciente = $data['id_paciente'] ?? null;  // Obtener id_paciente
@@ -110,6 +116,8 @@ public function listarRecetas($f3) {
 
 
 public function guardarConsultaConRecetas($f3) {
+        $decoded = validateJWT($f3);
+    if (!$decoded) return;
     try {
         $data = json_decode($f3->get('BODY'), true);
 

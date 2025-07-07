@@ -4,6 +4,8 @@ class reportes_Ctrl {
 
     // Método para obtener todos los reportes según un rango de fechas
     public function getReportesPorFecha($f3) {
+            $decoded = validateJWT($f3);
+    if (!$decoded) return;
         $data = json_decode($f3->get('BODY'), true);
 
         // Validar JSON y fechas

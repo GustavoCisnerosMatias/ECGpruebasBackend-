@@ -15,6 +15,8 @@ class antecedentes_flia_Ctrl
 //medicaentos listar por id 
 public function obtenerante_flia_xid($f3)
 {
+        $decoded = validateJWT($f3);
+    if (!$decoded) return;
     try {
         // Obtén el cuerpo de la solicitud como un JSON
         $data = json_decode($f3->get('BODY'), true);
@@ -37,6 +39,8 @@ public function obtenerante_flia_xid($f3)
 
 }
 public function guardarAntecedenteFamiliar($f3) {
+        $decoded = validateJWT($f3);
+    if (!$decoded) return;
     try {
         $data = json_decode($f3->get('BODY'), true);
 
@@ -62,6 +66,8 @@ public function guardarAntecedenteFamiliar($f3) {
 }
 
 public function editarAntecedenteFamiliar($f3) {
+        $decoded = validateJWT($f3);
+    if (!$decoded) return;
     try {
         $data = json_decode($f3->get('BODY'), true);
 

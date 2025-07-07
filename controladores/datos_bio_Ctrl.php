@@ -12,6 +12,8 @@ class datos_bio_Ctrl
     // Método para obtener datos en tiempo real basados en id_usuario, id_parametro y rango de fechas
     public function obtenerDatospara($f3)
     {
+            $decoded = validateJWT($f3);
+    if (!$decoded) return;
         // Verificar que la solicitud sea de tipo POST
         if ($f3->get('VERB') !== 'POST') {
             echo json_encode(['mensaje' => 'Método no permitido, use POST']);

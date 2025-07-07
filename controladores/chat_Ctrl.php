@@ -13,6 +13,8 @@ class chat_Ctrl
     // Mostrar chat filtrado por id_usuario e id_medico
     public function mostrarchatnuevo($f3)
     {
+            $decoded = validateJWT($f3);
+    if (!$decoded) return;
         // Obteniendo el cuerpo de la solicitud en formato JSON
         $data = json_decode($f3->get('BODY'), true);
         $id_usuario = $data['id_usuario'] ?? null;  // Usar null si no está presente
@@ -39,6 +41,8 @@ class chat_Ctrl
     // Mostrar chat nuevo de medico
     public function mostrarchatnuevomedi($f3)
     {
+            $decoded = validateJWT($f3);
+    if (!$decoded) return;
         // Obteniendo el cuerpo de la solicitud en formato JSON
         $data = json_decode($f3->get('BODY'), true);
         $id_usuario = $data['id_usuario'] ?? null;  // Usar null si no está presente
@@ -65,6 +69,8 @@ class chat_Ctrl
      // Mostrar chat nuevo de medico todos 
     public function mostrarchatnuevomeditodos($f3)
 {
+        $decoded = validateJWT($f3);
+    if (!$decoded) return;
     // Obteniendo el cuerpo de la solicitud en formato JSON
     $data = json_decode($f3->get('BODY'), true);
 
@@ -98,6 +104,8 @@ class chat_Ctrl
     // Mostrar chat filtrado por id_usuario e id_medico
     public function mostrarchat($f3)
     {
+            $decoded = validateJWT($f3);
+    if (!$decoded) return;
         // Obteniendo el cuerpo de la solicitud en formato JSON
         $data = json_decode($f3->get('BODY'), true);
         $id_usuario = $data['id_usuario'] ?? null;  // Usar null si no está presente
@@ -124,6 +132,8 @@ class chat_Ctrl
 
     public function enviarMensaje($f3)
     {
+            $decoded = validateJWT($f3);
+    if (!$decoded) return;
         // Obteniendo el cuerpo de la solicitud en formato JSON
         $data = json_decode($f3->get('BODY'), true);
         $id_medico = $data['id_medico'] ?? null;
@@ -156,6 +166,8 @@ class chat_Ctrl
     // Actualizar la vista de un mensaje
     public function actualizarVista($f3)
     {
+            $decoded = validateJWT($f3);
+    if (!$decoded) return;
         // Obteniendo el cuerpo de la solicitud en formato JSON
         $data = json_decode($f3->get('BODY'), true);
         $id_mensaje = $data['id_mensaje'] ?? null; // Usar null si no está presente

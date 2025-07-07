@@ -13,6 +13,8 @@ class estadoUsuario_Ctrl
     //especialidad
     public function mostrarnota($f3)
     {
+            $decoded = validateJWT($f3);
+    if (!$decoded) return;
         try {
             $nota = $this->modelo->mostrarnotas();
 

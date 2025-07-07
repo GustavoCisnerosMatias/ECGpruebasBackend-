@@ -35,6 +35,8 @@ class centro_Ctrl
     }
 
     public function insertarCentro($f3) {
+        $decoded = validateJWT($f3);
+         if (!$decoded) return;
         $data = json_decode($f3->get('BODY'), true);
         if (!isset($data['nombre_centro'], $data['tipo_centro'])) {
             echo json_encode(['status' => 'error', 'message' => 'Datos incompletos']);
@@ -46,6 +48,8 @@ class centro_Ctrl
     }
 
     public function actualizarCentro($f3) {
+        $decoded = validateJWT($f3);
+         if (!$decoded) return;
         $id = $f3->get('PARAMS.id');
         $data = json_decode($f3->get('BODY'), true);
         if (!isset($data['nombre_centro'], $data['tipo_centro'])) {
@@ -58,6 +62,8 @@ class centro_Ctrl
     }
 
     public function eliminarCentro($f3) {
+        $decoded = validateJWT($f3);
+        if (!$decoded) return;
         $id = $f3->get('PARAMS.id');
         $this->modelo->eliminarCentro($id);
         echo json_encode(['status' => 'success', 'message' => 'Centro eliminado']);

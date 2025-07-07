@@ -9,6 +9,8 @@ class pdf_Ctrl {
         }
     }
     public function generarPDF($f3) {
+            $decoded = validateJWT($f3);
+    if (!$decoded) return;
         try {
             $data = json_decode($f3->get('BODY'), true);
             if (
@@ -106,6 +108,8 @@ class pdf_Ctrl {
     
     
     private function generateErrorPdf($msg = 'Error generando PDF') {
+            $decoded = validateJWT($f3);
+    if (!$decoded) return;
         $pdf = new TCPDF('L','mm','A4', true,'UTF-8', false);
         $pdf->AddPage();
         $pdf->SetFont('helvetica','B',16);

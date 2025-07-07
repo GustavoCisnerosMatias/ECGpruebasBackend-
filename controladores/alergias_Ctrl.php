@@ -10,33 +10,36 @@ class alergias_Ctrl
     }
 
     // Método para mostrar las alertas
-    public function mostrarAlergias($f3)
-{
-    try {
-        // Obtén el cuerpo de la solicitud como un JSON
-        $data = json_decode($f3->get('BODY'), true);
+    public function mostrarAlergias($f3){
+        $decoded = validateJWT($f3);
+        if (!$decoded) return;
+        try {
+            // Obtén el cuerpo de la solicitud como un JSON
+            $data = json_decode($f3->get('BODY'), true);
 
-        // Obtén el ID de usuario directamente del JSON
-        $id_paciente = $data['id_paciente'];
+            // Obtén el ID de usuario directamente del JSON
+            $id_paciente = $data['id_paciente'];
 
-        // Obtener las alertas usando el ID de usuario
-        $Alergias = $this->modelo->obtenerAlergias($id_paciente);
+            // Obtener las alertas usando el ID de usuario
+            $Alergias = $this->modelo->obtenerAlergias($id_paciente);
 
-        if ($Alergias) {
-            echo json_encode(['Alergias' => $Alergias]);
-        } else {
-            echo json_encode(['mensaje' => 'No se encontraron Alergias']);
+            if ($Alergias) {
+                echo json_encode(['Alergias' => $Alergias]);
+            } else {
+                echo json_encode(['mensaje' => 'No se encontraron Alergias']);
+            }
+        } catch (Exception $e) {
+            http_response_code(500);
+            echo json_encode(['mensaje' => 'Error al obtener las alergias: ' . $e->getMessage()]);
         }
-    } catch (Exception $e) {
-        http_response_code(500);
-        echo json_encode(['mensaje' => 'Error al obtener las alergias: ' . $e->getMessage()]);
-    }
 }
 
 
 
 
 public function guardarAlergias($f3) {
+    $decoded = validateJWT($f3);
+    if (!$decoded) return;
     try {
         $data = json_decode($f3->get('BODY'), true);
 
@@ -60,6 +63,8 @@ public function guardarAlergias($f3) {
 }
 
 public function editarAlergias($f3) {
+        $decoded = validateJWT($f3);
+    if (!$decoded) return;
     try {
         $data = json_decode($f3->get('BODY'), true);
 
@@ -85,6 +90,8 @@ public function editarAlergias($f3) {
 
 public function mostrartipoalergias($f3)
     {
+    $decoded = validateJWT($f3);
+    if (!$decoded) return;
         try {
             $tipoalergias = $this->modelo->obtenertipoalergias();
 

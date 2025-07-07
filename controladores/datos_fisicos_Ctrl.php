@@ -13,6 +13,8 @@ class datos_fisicos_Ctrl
 
 public function listarDatosFisicos($f3)
 {
+        $decoded = validateJWT($f3);
+    if (!$decoded) return;
     // Obtener el cuerpo de la solicitud y decodificar el JSON
     $json = $f3->get('BODY');
     $data = json_decode($json, true);
@@ -51,6 +53,8 @@ public function listarDatosFisicos($f3)
     // Método para crear o actualizar datos físicos del paciente
     public function createOrUpdateDatosFisicos($f3)
     {
+            $decoded = validateJWT($f3);
+    if (!$decoded) return;
         // Obtener el cuerpo de la solicitud y decodificar el JSON
         $json = $f3->get('BODY');
         $data = json_decode($json, true);

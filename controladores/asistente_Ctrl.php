@@ -13,6 +13,8 @@ class asistente_Ctrl
     // Método para actualizar los datos físicos del paciente (peso y altura)
     public function actualizarDatosFisicos($f3)
     {
+            $decoded = validateJWT($f3);
+    if (!$decoded) return;
         $json = $f3->get('BODY');
         $data = json_decode($json, true);
 
@@ -44,6 +46,8 @@ class asistente_Ctrl
     // Método para obtener los datos los pacientes del medico por el id_uaurio de asistente 
     public function metodoparaoctenerdatosfisicos($f3)
     {
+            $decoded = validateJWT($f3);
+    if (!$decoded) return;
         $json = $f3->get('BODY');
         $data = json_decode($json, true);
 
@@ -77,6 +81,8 @@ class asistente_Ctrl
     // Método para obtener los datos de un médico por id_usuario
     public function obtenerasisitentePorUsuario($f3)
     {
+            $decoded = validateJWT($f3);
+    if (!$decoded) return;
         $json = $f3->get('BODY');
         $data = json_decode($json, true);
 
@@ -108,6 +114,8 @@ class asistente_Ctrl
     // Método para inactivar asistente
     public function inactivarAsistente($f3)
     {
+            $decoded = validateJWT($f3);
+    if (!$decoded) return;
         $json = $f3->get('BODY');
         $data = json_decode($json, true);
 
@@ -144,6 +152,8 @@ class asistente_Ctrl
     // Método para obtener los datos los pacientes del medico por el id_uaurio de asistente 
     public function obtenerpacientesmedicoasisitente($f3)
     {
+            $decoded = validateJWT($f3);
+    if (!$decoded) return;
         $json = $f3->get('BODY');
         $data = json_decode($json, true);
 

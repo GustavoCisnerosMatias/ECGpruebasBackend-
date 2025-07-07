@@ -51,6 +51,8 @@ class horarios_Ctrl
      // Método para actualizar un horario existente
      public function editarhorarios($f3)
      {
+        $decoded = validateJWT($f3);
+        if (!$decoded) return;
          // Obtener el cuerpo de la solicitud y decodificar el JSON
          $json = $f3->get('BODY');
          $data = json_decode($json, true);

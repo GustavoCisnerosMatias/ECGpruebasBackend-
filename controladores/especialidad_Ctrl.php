@@ -27,6 +27,8 @@ class especialidad_Ctrl
     
     public function crearEspecialidad($f3)
     {
+            $decoded = validateJWT($f3);
+    if (!$decoded) return;
         try {
             $data = json_decode($f3->get('BODY'), true);
             $resultado = $this->modelo->crearEspecialidad($data);
@@ -49,6 +51,8 @@ class especialidad_Ctrl
 
     public function eliminarEspecialidad($f3)
     {
+            $decoded = validateJWT($f3);
+    if (!$decoded) return;
         try {
             $id = $f3->get('PARAMS.id');
             $this->modelo->eliminarEspecialidad($id);

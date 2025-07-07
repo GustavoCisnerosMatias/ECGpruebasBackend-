@@ -11,6 +11,8 @@ class antecedente_personal_Ctrl
 
     public function crearAntecedentePersonal($f3, $params)
 {
+        $decoded = validateJWT($f3);
+    if (!$decoded) return;
     // Leer el cuerpo de la solicitud y decodificar el JSON
     $jsonInput = file_get_contents("php://input");
     $data = json_decode($jsonInput, true);
@@ -50,6 +52,8 @@ class antecedente_personal_Ctrl
 
  // Método para listar antecedentes personales de un paciente específico
  public function listarAntecedentesPersonales($f3, $params) {
+        $decoded = validateJWT($f3);
+    if (!$decoded) return;
     // Leer el cuerpo de la solicitud y decodificar el JSON
     $jsonInput = file_get_contents("php://input");
     $data = json_decode($jsonInput, true);

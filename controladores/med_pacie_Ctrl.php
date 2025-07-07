@@ -11,7 +11,8 @@ class med_pacie_Ctrl
 
    // Método para guardar relación entre médico y paciente
    public function guardarRelacion($f3)
-   {
+   {     $decoded = validateJWT($f3);
+    if (!$decoded) return;
        $json = $f3->get('BODY');
        $data = json_decode($json, true);
    
@@ -49,6 +50,8 @@ class med_pacie_Ctrl
 
     // Método para obtener los datos del médico-paciente basado en el ID del usuario
 public function obtenerDatosMedicoPaciente($f3) {
+        $decoded = validateJWT($f3);
+    if (!$decoded) return;
     $id_usuario = $f3->get('GET.id_usuario');  // Obtener el parámetro de la URL
 
     if (!$id_usuario) {
@@ -74,6 +77,8 @@ public function obtenerDatosMedicoPaciente($f3) {
 
     // Método para obtener los pacientes del medico basado en el ID del usuario
     public function obtenerDatosPaciente($f3) {
+            $decoded = validateJWT($f3);
+    if (!$decoded) return;
         $id_usuario = $f3->get('GET.id_usuario');  // Obtener el parámetro de la URL
 
         if (!$id_usuario) {
@@ -96,6 +101,8 @@ public function obtenerDatosMedicoPaciente($f3) {
 
 
     public function eliminarRelacion($f3) {
+            $decoded = validateJWT($f3);
+    if (!$decoded) return;
         // Obtener el cuerpo de la solicitud (POST)
         $json = $f3->get('BODY');
         $data = json_decode($json, true);
@@ -155,25 +162,4 @@ public function obtenerDatosMedicoPaciente($f3) {
 
 
 
-    /*  // Método para obtener los pacientes del medico basado en el ID del usuario
-     public function obtenertotalpacientes($f3) {
-        $id_usuario = $f3->get('GET.id_usuario');  // Obtener el parámetro de la URL
-
-        if (!$id_usuario) {
-            echo json_encode(['mensaje' => 'Parámetro id_usuario es requerido']);
-            return;
-        }
-
-        try {
-            $datos = $this->modelo->total_paceintes($id_usuario);
-
-            if ($datos) {
-                echo json_encode($datos);
-            } else {
-                echo json_encode(['mensaje' => 'No se encontraron datos']);
-            }
-        } catch (Exception $e) {
-            echo json_encode(['mensaje' => 'Error al obtener datos: ' . $e->getMessage()]);
-        }
-    } */
 }

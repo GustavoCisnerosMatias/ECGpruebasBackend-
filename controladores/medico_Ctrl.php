@@ -116,6 +116,8 @@ class medico_Ctrl
 
     public function listartodosmedicos($f3)
     {
+            $decoded = validateJWT($f3);
+    if (!$decoded) return;
         try {
             $medicos = $this->modelo->getTopics();
 
@@ -132,6 +134,8 @@ class medico_Ctrl
     // Método para mostrar todos los médicos con id_medico, nombre, apellido y centro_hospitalario
     public function mostrarMedicos($f3)
     {
+        $decoded = validateJWT($f3);
+        if (!$decoded) return;
         try {
             $medicos = $this->modelo->obtenerMedicos();
 
@@ -186,45 +190,15 @@ class medico_Ctrl
             echo json_encode(['mensaje' => 'Error al crear médico: ' . $e->getMessage()]);
         }
     }
-    // {
-    //     // Obtener el cuerpo de la solicitud y decodificar el JSON
-    //     $json = $f3->get('BODY');
-    //     $data = json_decode($json, true);
-
-    //     if (json_last_error() !== JSON_ERROR_NONE) {
-    //         echo json_encode(['mensaje' => 'JSON inválido']);
-    //         return;
-    //     }
-
-    //     // Verificar si todos los campos necesarios están presentes
-    //     $requiredFields = [
-    //         'id_usuario', 'id_centro', 'id_especialidad','estado'
-    //     ];
-
-    //     foreach ($requiredFields as $field) {
-    //         if (!isset($data[$field])) {
-    //             echo json_encode(['mensaje' => 'Faltan parámetros: ' . $field]);
-    //             return;
-    //         }
-    //     }
-
-
-    //     // Crear el nuevo usuario
-    //     $result = $this->modelo->createmedico($data);
-
-    //     if ($result) {
-    //         echo json_encode(['mensaje' => 'Usuario creado exitosamente']);
-    //     } else {
-    //         echo json_encode(['mensaje' => 'Error al crear el usuario']);
-    //     }
-    // }
-
+ 
 
 
 
     // Método para obtener los datos de un médico por id_usuario
     public function obtenerMedicoPorUsuario($f3)
     {
+        $decoded = validateJWT($f3);
+        if (!$decoded) return;
         $json = $f3->get('BODY');
         $data = json_decode($json, true);
 

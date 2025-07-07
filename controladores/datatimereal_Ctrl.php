@@ -17,11 +17,15 @@ class datatimereal_Ctrl {
     }
 
     public function obtenerTopics() {
+        $decoded = validateJWT($f3);
+        if (!$decoded) return;
         $topics = $this->M_Dispositivos->obtenerTopics();
         echo json_encode(['status' => 'success', 'topics' => $topics]);
     }
     
     public function obtenerParametrosEstadistica($f3) {
+            $decoded = validateJWT($f3);
+    if (!$decoded) return;
         $data = json_decode($f3->get('BODY'), true);
 
         // Validar JSON y existencia del id_usuario
@@ -45,6 +49,8 @@ class datatimereal_Ctrl {
 
 
     public function obtenerdatosagrupados($f3) {
+            $decoded = validateJWT($f3);
+    if (!$decoded) return;
         $data = json_decode($f3->get('BODY'), true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
@@ -84,6 +90,8 @@ class datatimereal_Ctrl {
     }
 
     public function guardarDatosAgrupados($f3) {
+            $decoded = validateJWT($f3);
+    if (!$decoded) return;
         $data = json_decode($f3->get('BODY'), true);
 
         if (

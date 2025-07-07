@@ -19,14 +19,6 @@ if ((float)PCRE_VERSION<8.0)
 $f3->config('config.ini');
  $f3->config('routes.ini');
 
-
-//configurar la conexion con la basede datos
-// $f3->set('DB', new DB\SQL('mysql:host=' . $f3->get('database.host') . ';port='. $f3->get('database.portBD') .';dbname=' . $f3->get('database.dbname'), $f3->get('database.user'), $f3->get('database.pass')), $options = array(
-//     \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-//     \PDO::ATTR_PERSISTENT => TRUE,
-//     \PDO::MYSQL_ATTR_COMPRESS => TRUE,
-// ));
-// Conexión a base de datos y zona horaria
 $db = new DB\SQL(
     'mysql:host=' . $f3->get('database.host') . ';port=' . $f3->get('database.portBD') . ';dbname=' . $f3->get('database.dbname'),
     $f3->get('database.user'),
@@ -38,10 +30,10 @@ $db = new DB\SQL(
     )
 );
 
-// ✅ Zona horaria para MySQL
+//  Zona horaria para MySQL
 $db->exec("SET time_zone = 'America/Guayaquil'");
 
-// ✅ Guardar en F3
+//  Guardar en F3
 $f3->set('DB', $db);
 
 
@@ -63,6 +55,19 @@ $f3->route('GET /userref',
         echo View::instance()->render('layout.htm');
     }
 );
+$f3->route('GET /descargar-apk', function($f3) {
+    $filePath = 'public/descargas/app-debug.apk';
 
+    if (file_exists($filePath)) {
+        header('Content-Type: application/vnd.android.package-archive');
+        header('Content-Disposition: attachment; filename="app-debug.apk"');
+        header('Content-Length: ' . filesize($filePath));
+        readfile($filePath);
+        exit;
+    } else {
+        http_response_code(404);
+        echo json_encode(['error' => 'Archivo no encontrado']);
+    }
+});
 
 $f3->run();

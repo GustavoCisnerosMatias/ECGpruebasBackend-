@@ -31,6 +31,8 @@ class parametros_Ctrl
      // Método para crear un nuevo parámetro
     public function crearParametro($f3)
     {
+            $decoded = validateJWT($f3);
+    if (!$decoded) return;
         // Obtener los datos del parámetro del cuerpo de la solicitud
         $data = json_decode($f3->get('BODY'), true);
 
@@ -52,6 +54,8 @@ class parametros_Ctrl
     // Método para eliminar un parámetro
 public function eliminarParametro($f3)
 {
+        $decoded = validateJWT($f3);
+    if (!$decoded) return;
     // Obtener el id_parametro del cuerpo de la solicitud
     $data = json_decode($f3->get('BODY'), true);
     $id_parametro = $data['id_parametro'] ?? null;

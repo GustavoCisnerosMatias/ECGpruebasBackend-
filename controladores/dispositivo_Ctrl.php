@@ -10,6 +10,8 @@ class dispositivo_Ctrl
     }
     public function listartodosdispositivos($f3)
     {
+            $decoded = validateJWT($f3);
+    if (!$decoded) return;
         try {
             $dispositivos = $this->modelo->getAll();
 
@@ -63,6 +65,8 @@ class dispositivo_Ctrl
     // Método para listar dispositivos por id_usuario
     public function listarDispositivos($f3)
     {
+            $decoded = validateJWT($f3);
+    if (!$decoded) return;
         // Obtener el cuerpo de la solicitud y decodificar el JSON
         $json = $f3->get('BODY');
         $data = json_decode($json, true);
@@ -95,6 +99,8 @@ class dispositivo_Ctrl
     // Método para editar un dispositivo y crear uno nuevo
 public function editarYCrearDispositivo($f3)
 {
+        $decoded = validateJWT($f3);
+    if (!$decoded) return;
     $json = $f3->get('BODY');
     $data = json_decode($json, true);
 
@@ -165,6 +171,8 @@ public function editarYCrearDispositivo($f3)
     // Método para desactivar un dispositivo por su ID
     public function desactivarDispositivo($f3)
     {
+            $decoded = validateJWT($f3);
+    if (!$decoded) return;
         $json = $f3->get('BODY');
         $data = json_decode($json, true);
 

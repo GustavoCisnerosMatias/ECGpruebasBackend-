@@ -42,6 +42,8 @@ class User_Ctrl
 
     public function listartodosusuarios($f3)
     {
+                    $decoded = validateJWT($f3);
+    if (!$decoded) return;
         try {
             $usuarios = $this->M_Modelo->getTodosusuarios();
 
@@ -729,41 +731,6 @@ public function desbloquearuser($f3) {
 }
     
 
-
-// public function obtenerTopicforUser($f3)
-// {
-//     // Obtener el id_usuario desde la petición POST
-//     $idUsuario = $f3->get('POST.id_usuario');
-
-//     // Validar que el parámetro esté presente
-//     if (empty($idUsuario)) {
-//         echo json_encode([
-//             'mensaje' => 'Falta el parámetro id_usuario'
-//         ]);
-//         return;
-//     }
-
-//     // Limpiar el valor
-//     $idUsuario = trim($idUsuario);
-
-//     // Cargar los datos del usuario
-//     $this->M_Modelo->load(['id_usuario = ?', $idUsuario]);
-
-//     // Verificar si el usuario existe
-//     if ($this->M_Modelo->id_usuario) {
-//         // Obtener el topic/dispositivo
-//         $dispo = $this->M_Modelo->getdispo($idUsuario);
-
-//         echo json_encode([
-//             'mensaje' => 'Topic obtenido correctamente',
-//             'topic' => $dispo
-//         ]);
-//     } else {
-//         echo json_encode([
-//             'mensaje' => 'Usuario no encontrado'
-//         ]);
-//     }
-// }
 public function obtenerTopicforUser($f3)
 {
     // Obtener el cuerpo de la solicitud y decodificar el JSON

@@ -30,6 +30,8 @@ require_once('lib/middleware/JwtMiddleware.php');class medicamentos_Ctrl
 //medicaentos listar por id 
 public function mostrarmedicaxid($f3)
 {
+        $decoded = validateJWT($f3);
+    if (!$decoded) return;
     try {
         // Obtén el cuerpo de la solicitud como un JSON
         $data = json_decode($f3->get('BODY'), true);

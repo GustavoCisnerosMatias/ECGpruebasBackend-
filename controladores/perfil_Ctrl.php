@@ -12,6 +12,8 @@ class perfil_Ctrl
     // Método para buscar id_usuario 
 public function getImagen($f3)
 {
+        $decoded = validateJWT($f3);
+    if (!$decoded) return;
     $id_usuario = $f3->get('GET.id_usuario');
 
     // Validar que se haya proporcionado el id_usuario
@@ -35,7 +37,9 @@ public function getImagen($f3)
 }
 public function agregarImagen($f3)
     {
-        // Obtener el cuerpo de la solicitud y decodificar el JSON
+            $decoded = validateJWT($f3);
+    if (!$decoded) return;       
+     // Obtener el cuerpo de la solicitud y decodificar el JSON
         $json = $f3->get('BODY');
         $data = json_decode($json, true);
 

@@ -11,6 +11,8 @@ class alertas_Ctrl
 
      public function obtenerAlertasPorUsuario($f3)
     {
+        $decoded = validateJWT($f3);
+        if (!$decoded) return;
         try {
             $id_usuario = $f3->get('PARAMS.id');
             $alertas = $this->modelo->obtenerAlertasPorUsuario($id_usuario);
@@ -28,6 +30,8 @@ class alertas_Ctrl
     // Marcar alerta como vista (estado = 0)
     public function marcarAlertaComoVista($f3)
     {
+        $decoded = validateJWT($f3);
+        if (!$decoded) return;
         try {
             $id_alerta = $f3->get('PARAMS.id');
             $this->modelo->marcarComoVista($id_alerta);
